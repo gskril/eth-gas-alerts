@@ -1,0 +1,16 @@
+{
+  "name": "eth-gas-alerts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index"
+  },
+  "author": "Greg Skriloff",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.4",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1"
+  }
+}
