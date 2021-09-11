@@ -1,7 +1,7 @@
 {
   "name": "eth-gas-alerts",
   "version": "1.0.0",
-  "description": "",
+  "description": "Automated tweets when gas on the ETH network is cheap",
   "main": "index.js",
   "scripts": {
     "start": "node index"

@@ -1,7 +1,7 @@
 # ETH Gas Tracker
 
-Send a tweet when gas is cheap on the ETH network.  
-Follow [@________](https://twitter.com/) on Twitter for alerts.
+Send a tweet when gas is cheap (60 GWEI or less) on the ETH network.  
+Follow [@ETHGasAlerts](https://twitter.com/ETHGasAlerts) on Twitter for alerts.
 
 ## How To Use
 1. Clone the project
