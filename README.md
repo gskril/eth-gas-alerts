@@ -22,6 +22,8 @@ Follow [@ETHGasAlerts](https://twitter.com/ETHGasAlerts) on Twitter for alerts.
 4. Change the name of .env.example to .env and configure the following:
     - [Etherscan API Key](https://docs.etherscan.io/getting-started/creating-an-account)
     - [Zapier Webhook](https://zapier.com/shared/787474b6f8cca2ea9df23b95324318704cbbd0e4)
+	- Minimum time to wait between tweets regardless of gas price
+	- Gas price that triggers a tweet
 
 5. Start the monitor
 	```bash

@@ -11,9 +11,6 @@ app.listen(process.env.PORT || 8080)
 
 getGasPrice()
 
-const minsBetweenTweets = 60
-const targetGasPrice = 60
-
 function getGasPrice() {
 	axios
 		.get("https://api.etherscan.io/api", {
@@ -25,14 +22,14 @@ function getGasPrice() {
 		})
 		.then(function (response) {
 			let averageGas = response.data.result.ProposeGasPrice
-			if (averageGas <= targetGasPrice) {
+			if (averageGas <= process.env.targetGasPrice) {
 				sendWebhook(averageGas)
 			} else {
-				// Check gas every 30 seconds if it's not below the target
-				console.log(`Gas is expensive right now (${averageGas}). Checking again in 30sec`)
+				// Check gas every minute if it's not below the target
+				console.log(`Gas is expensive right now (${averageGas}). Checking again in 1 min`)
 				setTimeout(() => {
 					getGasPrice()
-				}, 30*1000);
+				}, 60*1000);
 			}
 		})
 		.catch(function (error) {
@@ -50,7 +47,7 @@ function sendWebhook(averageGas) {
 			// Wait set amount of minutes before checking again after tweet
 			setTimeout(() => {
 				getGasPrice()
-			}, minsBetweenTweets*60*1000);
+			}, process.env.minsBetweenTweets*60*1000);
 		})
 		.catch((error) => {
 			console.log(error)
