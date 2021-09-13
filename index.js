@@ -22,8 +22,9 @@ function getGasPrice() {
 		})
 		.then(function (response) {
 			let averageGas = parseInt(response.data.result.ProposeGasPrice)
+			let time = response.headers.date.slice(-12)
 			if (averageGas <= process.env.targetGasPrice) {
-				sendWebhook(averageGas)
+				sendWebhook(averageGas, time)
 			} else {
 				// Check gas every minute if it's not below the target
 				console.log(`Gas is expensive right now (${averageGas}). Checking again in 1 min`)
@@ -37,10 +38,11 @@ function getGasPrice() {
 		})
 }
 
-function sendWebhook(averageGas) {
+function sendWebhook(averageGas, time) {
 	axios
 		.post(process.env.ZapierWebook, {
 			gas: averageGas,
+			time: time
 		})
 		.then((response) => {
 			console.info(`Sent gas price (${averageGas} GWEI) to Zapier Webhook`)
