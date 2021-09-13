@@ -21,7 +21,7 @@ function getGasPrice() {
 			},
 		})
 		.then(function (response) {
-			let averageGas = response.data.result.ProposeGasPrice
+			let averageGas = parseInt(response.data.result.ProposeGasPrice)
 			if (averageGas <= process.env.targetGasPrice) {
 				sendWebhook(averageGas)
 			} else {
