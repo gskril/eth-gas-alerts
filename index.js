@@ -48,7 +48,7 @@ function getGasPrice() {
 		})
 }
 
-function sendWebhook(averageGas, time) {
+function sendWebhook(averageGas, priceCategory, time) {
 	axios
 		.post(process.env.ZapierWebook, {
 			gas: averageGas,
