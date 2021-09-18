@@ -23,18 +23,20 @@ function getGasPrice() {
 		.then(function (response) {
 			let averageGas = parseInt(response.data.result.ProposeGasPrice)
 			let time = response.headers.date.slice(-12)
-			let priceCategory
+			let message
 			if (averageGas <= process.env.targetGasPrice) {
-				if (averageGas <= 60) {
-					priceCategory = "(solid price)"
+				if (averageGas <= 40) {
+					message = 'Amazing time to make $ETH transactions!'
 				} else if (averageGas <= 50) {
-					priceCategory = "(good price)"
-				} else if (averageGas <= 40) {
-					priceCategory = "(great price)"
-				} else if (averageGas <= 30) {
-					priceCategory = "(amazing price)"
+					message = 'Great time to make $ETH transactions!'
+				} else if (averageGas <= 60) {
+					message = 'Good time to make $ETH transactions!'
+				} else if (averageGas <= 70) {
+					message = 'Not a bad time to make $ETH transactions!'
+				} else {
+					message = 'Considering waiting until prices go down to make your ETH transactions.'
 				}
-				sendWebhook(averageGas, priceCategory, time)
+				sendWebhook(averageGas, message, time)
 			} else {
 				// Check gas every minute if it's not below the target
 				console.log(`Gas is expensive right now (${averageGas}). Checking again in 1 min`)
@@ -48,11 +50,11 @@ function getGasPrice() {
 		})
 }
 
-function sendWebhook(averageGas, priceCategory, time) {
+function sendWebhook(averageGas, message, time) {
 	axios
 		.post(process.env.ZapierWebook, {
 			gas: averageGas,
-			cost: priceCategory,
+			message: message,
 			time: time
 		})
 		.then((response) => {
