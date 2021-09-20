@@ -46,7 +46,10 @@ function getGasPrice() {
 			}
 		})
 		.catch(function (error) {
-			console.log(error)
+			console.log('Error fetching data from Etherscan API')
+			setTimeout(() => {
+				getGasPrice()
+			}, 60*1000);
 		})
 }
 
