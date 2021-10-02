@@ -26,13 +26,13 @@ function getGasPrice() {
 			let message
 			if (averageGas <= process.env.targetGasPrice) {
 				if (averageGas <= 40) {
-					message = 'Amazing time to make $ETH transactions!'
+					message = 'Amazing time to make #ETH transactions!'
 				} else if (averageGas <= 50) {
-					message = 'Great time to make $ETH transactions!'
+					message = 'Great time to make #ETH transactions!'
 				} else if (averageGas <= 60) {
-					message = 'Good time to make $ETH transactions!'
+					message = 'Good time to make #ETH transactions!'
 				} else if (averageGas <= 70) {
-					message = 'Not a bad time to make $ETH transactions!'
+					message = 'Not a bad time to make #ETH transactions!'
 				} else {
 					message = 'Considering waiting until prices go down to make your ETH transactions.'
 				}
