@@ -1,7 +1,7 @@
 {
   "name": "eth-gas-alerts",
   "version": "1.0.0",
-  "description": "Automated tweets when gas on the ETH network is cheap",
+  "description": "Tweet when gas on the ETH network is low.",
   "main": "index.js",
   "scripts": {
     "start": "node index"
@@ -11,6 +11,7 @@
   "dependencies": {
     "axios": "^0.21.4",
     "dotenv": "^10.0.0",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "twit": "^2.2.11"
   }
 }

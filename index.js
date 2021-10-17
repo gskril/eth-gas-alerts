@@ -2,14 +2,19 @@ require("dotenv").config()
 const express = require("express")
 const app = express()
 const axios = require("axios").default
+const twitter = require("./twitter")
 
+app.listen(process.env["PORT"] || 8080)
 app.get("/", function (req, res) {
 	res.send("Gas monitor online")
 })
 
-app.listen(process.env.PORT || 8080)
-
 getGasPrice()
+
+// Update twitter location with live gas price every minute
+setInterval(()=> {
+	getGasPriceConstant()
+}, 60*1000)
 
 function getGasPrice() {
 	axios
@@ -17,57 +22,66 @@ function getGasPrice() {
 			params: {
 				module: "gastracker",
 				action: "gasoracle",
-				apikey: process.env.EtherscanApiKeyToken,
+				apikey: process.env["ETHERSCAN_API_KEY"],
 			},
 		})
-		.then(function (response) {
-			let averageGas = parseInt(response.data.result.ProposeGasPrice)
-			let time = response.headers.date.slice(-12)
-			let message
-			if (averageGas <= process.env.targetGasPrice) {
+		.then(res => {
+			let averageGas = parseInt(res.data.result.ProposeGasPrice)
+
+			if (averageGas <= process.env["TARGET_GAS_PRICE"]) {
+				let time = res.headers.date.slice(-12)
+				let message
+				
 				if (averageGas <= 40) {
-					message = 'Amazing time to make #ETH transactions!'
+					message = "Amazing time to make $ETH transactions!"
 				} else if (averageGas <= 50) {
-					message = 'Great time to make #ETH transactions!'
+					message = "Great time to make $ETH transactions!"
 				} else if (averageGas <= 60) {
-					message = 'Good time to make #ETH transactions!'
-				} else if (averageGas <= 70) {
-					message = 'Not a bad time to make #ETH transactions!'
+					message = "Good time to make $ETH transactions!"
+				} else if (averageGas <= 80) {
+					message = "Not a bad time to make $ETH transactions!"
 				} else {
-					message = 'Considering waiting until prices go down to make your ETH transactions.'
+					message = "Consider waiting until prices go down to make your ETH transactions."
 				}
-				sendWebhook(averageGas, message, time)
+
+				let tweet = `Gas is currently ${averageGas} gwei (as of ${time}). ${message}`
+				twitter.tweet(tweet, averageGas)
+				console.log(`Waiting ${process.env["MINS_BETWEEN_TWEETS"]} minutes before checking again`)
+				// Wait specified amount of time before checking for gas again
+				setTimeout(() => {
+					getGasPrice()
+				}, process.env["MINS_BETWEEN_TWEETS"]*60*1000);
 			} else {
 				// Check gas every minute if it's not below the target
-				console.log(`Gas is expensive right now (${averageGas}). Checking again in 1 min`)
+				console.log(`Gas is expensive right now (${averageGas} gwei). Checking again in 1 min`)
 				setTimeout(() => {
 					getGasPrice()
 				}, 60*1000);
 			}
 		})
-		.catch(function (error) {
-			console.log('Error fetching data from Etherscan API')
+    	.catch(err => {
+			console.log("Error fetching data from Etherscan API")
+			// Retry on failure
 			setTimeout(() => {
 				getGasPrice()
 			}, 60*1000);
 		})
 }
 
-function sendWebhook(averageGas, message, time) {
+function getGasPriceConstant() {
 	axios
-		.post(process.env.ZapierWebook, {
-			gas: averageGas,
-			message: message,
-			time: time
+		.get("https://api.etherscan.io/api", {
+			params: {
+				module: "gastracker",
+				action: "gasoracle",
+				apikey: process.env["ETHERSCAN_API_KEY"],
+			},
 		})
-		.then((response) => {
-			console.info(`Sent gas price (${averageGas} GWEI) to Zapier Webhook`)
-			// Wait set amount of minutes before checking again after tweet
-			setTimeout(() => {
-				getGasPrice()
-			}, process.env.minsBetweenTweets*60*1000);
+		.then(res => {
+			let gas = parseInt(res.data.result.ProposeGasPrice)
+			twitter.updateLocation(gas)
 		})
-		.catch((error) => {
-			console.log(error)
+    	.catch(err => {
+			console.log("Error fetching data from Etherscan API")
 		})
 }
