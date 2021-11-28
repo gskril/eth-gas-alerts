@@ -1,22 +1,15 @@
 require("dotenv").config()
-const express = require("express")
-const app = express()
 const axios = require("axios").default
 const twitter = require("./twitter")
 
-app.listen(process.env["PORT"] || 8080)
-app.get("/", function (req, res) {
-	res.send("Gas monitor online")
-})
-
-getGasPrice()
+startGasMonitor()
 
 // Update twitter location with live gas price every minute
 setInterval(()=> {
-	getGasPriceConstant()
+	gasTwitterMonitorConstant()
 }, 60*1000)
 
-function getGasPrice() {
+function startGasMonitor() {
 	axios
 		.get("https://api.etherscan.io/api", {
 			params: {
@@ -49,13 +42,13 @@ function getGasPrice() {
 				console.log(`Waiting ${process.env["MINS_BETWEEN_TWEETS"]} minutes before checking again`)
 				// Wait specified amount of time before checking for gas again
 				setTimeout(() => {
-					getGasPrice()
+					startGasMonitor()
 				}, process.env["MINS_BETWEEN_TWEETS"]*60*1000);
 			} else {
 				// Check gas every minute if it's not below the target
 				console.log(`Gas is expensive right now (${averageGas} gwei). Checking again in 1 min`)
 				setTimeout(() => {
-					getGasPrice()
+					startGasMonitor()
 				}, 60*1000);
 			}
 		})
@@ -63,12 +56,12 @@ function getGasPrice() {
 			console.log("Error fetching data from Etherscan API")
 			// Retry on failure
 			setTimeout(() => {
-				getGasPrice()
+				startGasMonitor()
 			}, 60*1000);
 		})
 }
 
-function getGasPriceConstant() {
+function gasTwitterMonitorConstant() {
 	axios
 		.get("https://api.etherscan.io/api", {
 			params: {
