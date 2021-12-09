@@ -2,7 +2,15 @@ require("dotenv").config()
 const axios = require("axios").default
 const twitter = require("./twitter")
 
-startGasMonitor()
+const minutes = process.env.MINS_BEFORE_STARTING ? process.env.MINS_BEFORE_STARTING : 0
+if (minutes === 0) {
+	startGasMonitor()
+} else {
+	console.log(`Waiting ${minutes} minutes before checking gas to tweet`)
+	setTimeout(() => {
+		startGasMonitor()
+	}, minutes * 60 * 1000)
+}
 
 // Update twitter location with live gas price every minute
 setInterval(()=> {
