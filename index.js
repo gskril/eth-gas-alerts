@@ -15,7 +15,7 @@ if (minutes === 0) {
 // Update twitter location with live gas price every minute
 setInterval(()=> {
 	gasTwitterMonitorConstant()
-}, 60*1000)
+}, 50*1000)
 
 function startGasMonitor() {
 	axios
