@@ -54,7 +54,7 @@ function startGasMonitor() {
 				}, process.env["MINS_BETWEEN_TWEETS"]*60*1000);
 			} else {
 				// Check gas every minute if it's not below the target
-				console.log(`Gas is expensive right now (${averageGas} gwei). Checking again in 1 min`)
+				console.log(`Gas is expensive right now (${averageGas} gwei)`)
 				setTimeout(() => {
 					startGasMonitor()
 				}, 60*1000);
