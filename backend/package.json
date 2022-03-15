@@ -1,0 +1,16 @@
+{
+  "name": "eth-gas-alerts",
+  "version": "1.0.0",
+  "description": "Tweet when gas on the ETH network is low.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index"
+  },
+  "author": "Greg Skriloff",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.4",
+    "dotenv": "^10.0.0",
+    "twit": "^2.2.11"
+  }
+}
