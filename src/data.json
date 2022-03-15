@@ -1,0 +1,17 @@
+{
+  "ENS": {
+    "link": "",
+    "contractAddress": "",
+    "functions": {
+      "register": {
+        "name": "Register .eth name",
+        "notes": "Includes commit and registration transaction",
+        "gas": 335000
+      },
+      "renew": {
+        "name": "Renew .eth name",
+        "gas": 111000
+      }
+    }
+  }
+}
