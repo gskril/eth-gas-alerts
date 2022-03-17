@@ -1,17 +1,20 @@
-{
-  "ENS": {
-    "link": "",
+[
+  {
+    "name": "ENS",
+    "link": "https://ens.domains",
     "contractAddress": "",
-    "functions": {
-      "register": {
+    "functions": [
+      {
+        "method": "register",
         "name": "Register .eth name",
         "notes": "Includes commit and registration transaction",
         "gas": 335000
       },
-      "renew": {
+      {
+        "method": "renew",
         "name": "Renew .eth name",
         "gas": 111000
       }
-    }
+    ]
   }
-}
+]
