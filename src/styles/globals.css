@@ -42,7 +42,7 @@ h1 {
 }
 
 .title {
-  padding: 3rem 0;
+  padding: 4rem 0 3rem;
 }
 
 .project-grid {
@@ -76,6 +76,12 @@ h1 {
 .project__action-functions {
   font-size: .875rem;
   color: #838383;
+}
+
+.info {
+  position: absolute;
+  top: 0.325rem;
+  right: 1rem;
 }
 
 @media screen and (min-width: 40em) {

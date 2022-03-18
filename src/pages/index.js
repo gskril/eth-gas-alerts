@@ -1,22 +1,42 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import data from '../data.json'
-
-const gas = {
-  gwei: 40,
-  message: "low"
-}
-
-const ethPrice = 2800
-
-const gasPriceEstimate = (gasAmount) => {
-	// 1 ether = 1000000000000000000 wei
-	return `$${parseFloat(
-		gasAmount * gas.gwei * 0.000000001 * ethPrice
-	).toFixed(2)}`
-}
+import swr from 'swr'
 
 export default function Home() {
+
+  const gas = () => {
+    const fetcher = (...args) => fetch(...args).then((res) => res.json())
+  
+    const { data, error } = swr('/api/gas', fetcher, { refreshInterval: 30 * 1000 })
+  
+    if (error) return 'Error'
+    if (!data) return 'Loading...'
+  
+    return {
+      gwei: data.low,
+      message: data.message
+    }
+  }
+
+  const ethPrice = () => {
+    const fetcher = (...args) => fetch(...args).then((res) => res.json())
+  
+    const { data, error } = swr('/api/eth', fetcher, { refreshInterval: 30 * 1000 })
+  
+    if (error) return 'Error'
+    if (!data) return 'Loading...'
+
+    return data
+  }
+  
+  const gasPriceEstimate = (gasAmount) => {
+    // 1 ether = 1000000000000000000 wei
+    return `$${parseFloat(
+      gasAmount * gas().gwei * 0.000000001 * ethPrice()
+    ).toFixed(2)}`
+  }
+
   return (
     <>
       <Head>
@@ -24,6 +44,12 @@ export default function Home() {
         <meta name="description" content="Real-time gas price estimates for popular Ethereum protocols." />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
+      <div className="info">
+        Gas: {gas().gwei} gwei
+        <br />
+        ETH: ${ethPrice()}
+      </div>
 
       <main>
         <div className="container">
