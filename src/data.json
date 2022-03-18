@@ -6,13 +6,25 @@
     "actions": [
       {
         "name": "Register .eth name",
-        "contractFunctions": ["commit", "registerWithConfig"],
-        "gas": 335000
+        "contractFunctions": [
+          {
+            "name": "commit",
+            "gas": 46267
+          }, 
+          {
+            "name": "registerWithConfig",
+            "gas": 280000
+          }
+        ]
       },
       {
         "name": "Renew .eth name",
-        "contractFunctions": ["renew"],
-        "gas": 111000
+        "contractFunctions": [
+          {
+            "name": "renew",
+            "gas": 111000
+          }
+        ]
       }
     ]
   }

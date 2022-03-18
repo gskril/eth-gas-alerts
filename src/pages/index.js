@@ -10,8 +10,10 @@ const gas = {
 const ethPrice = 2800
 
 const gasPriceEstimate = (gasAmount) => {
-  // 1 ether = 1000000000000000000 wei
-  return `$${gasAmount * gas.gwei * 0.000000001 * ethPrice}`
+	// 1 ether = 1000000000000000000 wei
+	return `$${parseFloat(
+		gasAmount * gas.gwei * 0.000000001 * ethPrice
+	).toFixed(2)}`
 }
 
 export default function Home() {
@@ -40,13 +42,25 @@ export default function Home() {
                   </h2>
                   <div className="project__actions">
                     {project.actions.map((action) => {
+                      // Add all action.contractFunctions.gas together
+                      const totalGas = action.contractFunctions.map(f => f.gas).reduce((a, b) => a + b, 0)
+
                       return (
                         <div className={["project__action", stringToClass(action.name)].join(" ")}>
                           <span className="project__action-name">
-                            {action.name}: {gasPriceEstimate(action.gas)}
+                            {action.name}: {gasPriceEstimate(totalGas)}
                           </span>
                           <span className="project__action-functions">
-                            Transactions: {action.contractFunctions.join(", ")}
+                            Transactions: {action.contractFunctions.map((f, i) => {
+                              const numberOfFunctions = action.contractFunctions.length
+
+                              return (
+                                <>
+                                  {f.name} {numberOfFunctions > 1 ? `(${gasPriceEstimate(f.gas)})` : null}
+                                  {i < numberOfFunctions - 1 ? ", " : ""}
+                                </>
+                              )
+                            })}
                           </span>
                         </div>
                       )

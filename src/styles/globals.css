@@ -37,18 +37,18 @@ h4 {
 }
 
 h1 {
-  font-size: 2.875rem;
-  width: 40rem;
+  font-size: 2rem;
+  max-width: 40rem;
 }
 
 .title {
-  padding: 5rem 0;
+  padding: 3rem 0;
 }
 
 .project-grid {
   display: grid;
   gap: 2rem;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr;
   justify-content: space-around;
 }
 
@@ -76,4 +76,24 @@ h1 {
 .project__action-functions {
   font-size: .875rem;
   color: #838383;
+}
+
+@media screen and (min-width: 40em) {
+  h1 {
+    font-size: 2.875rem;
+  }
+
+  .title {
+    padding: 5rem 0;
+  }
+
+  .project-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (min-width: 60em) {
+  .project-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
