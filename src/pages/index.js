@@ -18,19 +18,19 @@ export default function Home() {
           Welcome to ETH Gas Alerts
         </h1>
 
-        {data.map(item => {
+        {data.map(project => {
           return (
-            <div className={["project", item.name.toLowerCase()].join(" ")}>
+            <div className={["project", stringToClass(project.name)].join(" ")}>
               <h2 className="project__name">
-                <Link href={item.link}>
+                <Link href={project.link}>
                   <a>test</a>
                 </Link>
               </h2>
               <ul>
-                {item.functions.map((func) => {
+                {project.actions.map((action) => {
                   return (
-                    <li className="project__function">
-                      {func.name}
+                    <li className={["project__action", stringToClass(action.name)].join(" ")}>
+                      {action.name}
                     </li>
                   )
                 })}
@@ -59,4 +59,10 @@ export default function Home() {
       </footer>
     </div>
   )
+}
+
+const stringToClass = (str) => {
+  // remove special characters then replace spaces with dashes
+  str = str.replace(/[^a-zA-Z0-9- ]/g, '').toLowerCase()
+  return str.replace(/ /g, '-')
 }

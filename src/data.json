@@ -1,18 +1,17 @@
 [
   {
-    "name": "ENS",
+    "name": "Ethereum Name Service",
     "link": "https://ens.domains",
-    "contractAddress": "",
-    "functions": [
+    "contractAddress": "0x283af0b28c62c092c9727f1ee09c02ca627eb7f5",
+    "actions": [
       {
-        "method": "register",
         "name": "Register .eth name",
-        "notes": "Includes commit and registration transaction",
+        "contractFunctions": ["commit", "registerWithConfig"],
         "gas": 335000
       },
       {
-        "method": "renew",
         "name": "Renew .eth name",
+        "contractFunctions": ["renew"],
         "gas": 111000
       }
     ]
