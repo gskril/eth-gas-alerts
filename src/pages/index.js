@@ -60,7 +60,7 @@ export default function Home() {
           <div className="project-grid">
             {data.map(project => {
               return (
-                <div className={["project", stringToClass(project.name)].join(" ")}>
+                <div className={"project"} key={stringToClass(project.name)}>
                   <h2 className="project__name">
                     <Link href={project.link}>
                       {project.name}
@@ -72,7 +72,7 @@ export default function Home() {
                       const totalGas = action.contractFunctions.map(f => f.gas).reduce((a, b) => a + b, 0)
 
                       return (
-                        <div className={["project__action", stringToClass(action.name)].join(" ")}>
+                        <div className={"project__action"} key={stringToClass(action.name)}>
                           <span className="project__action-name">
                             {action.name}: {gasPriceEstimate(totalGas)}
                           </span>
