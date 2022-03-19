@@ -11,7 +11,7 @@ import data from '../data.json'
 export default function Home() {
   const fetcher = (...args) => fetch(...args).then(res => res.json())
   
-  const gas = () => {
+  const Gas = () => {
     const { data, error } = useSWR('/api/gas', fetcher, {
       refreshInterval: 1000 * 30 // 30 seconds
     })
@@ -31,7 +31,7 @@ export default function Home() {
     }
   }
 
-  const ethPrice = () => {
+  const EthPrice = () => {
     const { data, error } = useSWR('/api/eth', fetcher, {
       refreshInterval: 30 * 1000
     })
@@ -45,12 +45,12 @@ export default function Home() {
   const gasPriceEstimate = (gasAmount) => {
     // 1 ether = 1000000000000000000 wei
     return `$${parseFloat(
-      gasAmount * gasPrice * 0.000000001 * ethPrice()
+      gasAmount * gasPrice * 0.000000001 * EthPrice()
     ).toFixed(2)}`
   }
 
   const [sliderValue, setSliderValue] = useState(25)
-  const [gasPrice, setGasPrice] = useState(gas().gwei || sliderValue) // TODO: fix default value to be the current gas price
+  const [gasPrice, setGasPrice] = useState(Gas().gwei) // TODO: fix default value to be the current gas price
   
   const sliderProps = {
     min: 0,
@@ -65,8 +65,8 @@ export default function Home() {
   }
 
   const resetGasPrice = () => {
-    setGasPrice(gas().gwei)
-    setSliderValue(gas().gwei)
+    setGasPrice(Gas().gwei)
+    setSliderValue(Gas().gwei)
   }
 
   return (
@@ -78,9 +78,9 @@ export default function Home() {
       </Head>
 
       <div className="info">
-        Gas: {gas().gwei} gwei
+        Gas: {Gas().gwei} gwei
         <br />
-        ETH: ${ethPrice()}
+        ETH: ${EthPrice()}
       </div>
 
       <main>
