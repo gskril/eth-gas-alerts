@@ -1,18 +1,24 @@
 import Head from 'next/head'
 import Link from 'next/link'
+import { useState } from 'react'
+
+import useSWR from 'swr'
+import Slider from 'rc-slider'
+import 'rc-slider/assets/index.css'
+
 import data from '../data.json'
-import swr from 'swr'
 
 export default function Home() {
-
+  const fetcher = (...args) => fetch(...args).then(res => res.json())
+  
   const gas = () => {
-    const fetcher = (...args) => fetch(...args).then((res) => res.json())
-  
-    const { data, error } = swr('/api/gas', fetcher, { refreshInterval: 30 * 1000 })
-  
+    const { data, error } = useSWR('/api/gas', fetcher, {
+      refreshInterval: 1000 * 30 // 30 seconds
+    })
+
     if (error) return 'Error'
     if (!data) return 'Loading...'
-  
+
     return {
       gwei: data.low,
       message: data.message
@@ -20,9 +26,9 @@ export default function Home() {
   }
 
   const ethPrice = () => {
-    const fetcher = (...args) => fetch(...args).then((res) => res.json())
-  
-    const { data, error } = swr('/api/eth', fetcher, { refreshInterval: 30 * 1000 })
+    const { data, error } = useSWR('/api/eth', fetcher, {
+      refreshInterval: 30 * 1000
+    })
   
     if (error) return 'Error'
     if (!data) return 'Loading...'
@@ -33,8 +39,28 @@ export default function Home() {
   const gasPriceEstimate = (gasAmount) => {
     // 1 ether = 1000000000000000000 wei
     return `$${parseFloat(
-      gasAmount * gas().gwei * 0.000000001 * ethPrice()
+      gasAmount * gasPrice * 0.000000001 * ethPrice()
     ).toFixed(2)}`
+  }
+
+  const [sliderValue, setSliderValue] = useState(25)
+  const [gasPrice, setGasPrice] = useState(gas().gwei || sliderValue) // TODO: fix default value to be the current gas price
+  
+  const sliderProps = {
+    min: 0,
+    max: 150,
+    step: 1,
+    marks: { 0: '0', 25: '25', 50: "50", 75: "75", 100: '100', 125: '125', 150: '150' },
+  }
+
+  const handleSliderChange = (value) => {
+    setSliderValue(value)
+    setGasPrice(value)
+  }
+
+  const resetGasPrice = () => {
+    setGasPrice(gas().gwei)
+    setSliderValue(gas().gwei)
   }
 
   return (
@@ -56,6 +82,16 @@ export default function Home() {
           <h1 className="title">
             Live estimates for gas fees on popular transactions
           </h1>
+
+          <Slider
+            value={sliderValue}
+            onChange={handleSliderChange}
+            {...sliderProps}
+          />
+          <div style={{ marginTop: 40, marginBottom: 20 }}>
+            <b>Selected Value: </b>{sliderValue}
+            {/* <button onClick={resetGasPrice}>Reset</button> */}
+          </div>
 
           <div className="project-grid">
             {data.map(project => {
