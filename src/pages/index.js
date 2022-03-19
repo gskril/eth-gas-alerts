@@ -16,8 +16,14 @@ export default function Home() {
       refreshInterval: 1000 * 30 // 30 seconds
     })
 
-    if (error) return 'Error'
-    if (!data) return 'Loading...'
+    if (error) return {
+      gwei: 'Error',
+      message: 'Error fetching data'
+    }
+    if (!data) return {
+      gwei: '__',
+      message: 'Loading data...'
+    }
 
     return {
       gwei: data.low,
@@ -31,7 +37,7 @@ export default function Home() {
     })
   
     if (error) return 'Error'
-    if (!data) return 'Loading...'
+    if (!data) return '____.__'
 
     return data
   }
