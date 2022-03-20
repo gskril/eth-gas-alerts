@@ -66,10 +66,6 @@ h1 {
   border-radius: 0.5rem;
 }
 
-.project span {
-  display: block;
-}
-
 .project__name {
   font-size: 1.25rem;
   font-weight: bold;
@@ -79,6 +75,18 @@ h1 {
 .project__actions {
   display: grid;
   gap: 1rem;
+}
+
+.project summary {
+  outline: none !important;
+}
+
+.project summary:hover {
+  cursor: pointer;
+}
+
+.project__action-name {
+  margin-left: 0.125rem;
 }
 
 .project__action-functions {

@@ -51,8 +51,8 @@ export default function Home() {
     ).toFixed(2)}`
   }
 
-  const [sliderValue, setSliderValue] = useState(25)
-  const [gasPrice, setGasPrice] = useState(Gas().gwei) // TODO: fix default value to be the current gas price
+  const [sliderValue, setSliderValue] = useState(0)
+  const [gasPrice, setGasPrice] = useState(0) // TODO: fix default value to be the current gas price
   
   const sliderProps = {
     min: 0,
@@ -159,7 +159,7 @@ export default function Home() {
 			<main>
 				<Container>
 					<h1 className="title">
-						Live estimates for gas fees on popular transactions
+            Transaction fee estimates for popular Ethereum protocols
 					</h1>
 
 					<Slider
@@ -168,7 +168,7 @@ export default function Home() {
 						{...sliderProps}
 					/>
 					<div style={{ marginTop: 40, marginBottom: 20 }}>
-						<b>Selected Value: </b>
+						<b>Gwei for estimate: </b>
 						{sliderValue}
 						{/* <button onClick={resetGasPrice}>Reset</button> */}
 					</div>
@@ -181,9 +181,14 @@ export default function Home() {
 									key={stringToClass(project.name)}
 								>
 									<h2 className="project__name">
-										<Link href={project.link}>
-											{project.name}
-										</Link>
+                    {project.link
+                      ? <Link href={project.link}>
+                          <a target="_blank" rel="noreferrer">
+                            {project.name}
+                          </a>
+                        </Link>
+                      : project.name
+                    }
 									</h2>
 									<div className="project__actions">
 										{project.actions.map((action) => {
@@ -202,40 +207,44 @@ export default function Home() {
 														action.name
 													)}
 												>
-													<span className="project__action-name">
-														{action.name}:{' '}
-														{gasPriceEstimate(
-															totalGas
-														)}
-													</span>
-													<span className="project__action-functions">
-														Transactions:{' '}
-														{action.contractFunctions.map(
-															(f, i) => {
-																const numberOfFunctions =
-																	action
-																		.contractFunctions
-																		.length
+                          <details>
+                            <summary>
+                              <span className="project__action-name">
+                                {action.name}:{' '}
+                                {gasPriceEstimate(
+                                  totalGas
+                                )}
+                              </span>
+                            </summary>
+                            <span className="project__action-functions">
+                              Transactions:{' '}
+                              {action.contractFunctions.map(
+                                (f, i) => {
+                                  const numberOfFunctions =
+                                    action
+                                      .contractFunctions
+                                      .length
 
-																return (
-																	<>
-																		{f.name}{' '}
-																		{numberOfFunctions >
-																		1
-																			? `(${gasPriceEstimate(
-																					f.gas
-																			  )})`
-																			: null}
-																		{i <
-																		numberOfFunctions -
-																			1
-																			? ', '
-																			: ''}
-																	</>
-																)
-															}
-														)}
-													</span>
+                                  return (
+                                    <>
+                                      {f.name}{' '}
+                                      {numberOfFunctions >
+                                      1
+                                        ? `(${gasPriceEstimate(
+                                            f.gas
+                                          )})`
+                                        : null}
+                                      {i <
+                                      numberOfFunctions -
+                                        1
+                                        ? ', '
+                                        : ''}
+                                    </>
+                                  )
+                                }
+                              )}
+                            </span>
+                          </details>
 												</div>
 											)
 										})}
