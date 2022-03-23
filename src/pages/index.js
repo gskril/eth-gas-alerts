@@ -86,10 +86,6 @@ export default function Home() {
 
 			<Container>
 				<div className="analytics">
-					{/* <span className="analytics__icon">
-            <span className="light-text">ETH:&nbsp;</span>
-            ${EthPrice()}
-          </span> */}
 					<span className="analytics__icon">
 						<svg
 							width="13"
@@ -98,9 +94,7 @@ export default function Home() {
 							fill="none"
 							xmlns="http://www.w3.org/2000/svg"
 						>
-							<g
-								clipPath="url(#clip0_16_63)"
-							>
+							<g clipPath="url(#clip0_16_63)">
 								<path
 									d="M10.5003 12.8333C9.56038 12.8333 8.55588 12.3227 8.55588 10.8888C8.55588 10.0834 8.99066 9.53628 9.41105 9.00739C9.57555 8.8005 9.74199 8.59128 9.89288 8.3595C9.28816 7.80767 8.62277 7.38883 8.16699 7.38883V6.61106C8.79738 6.61106 9.56816 7.05167 10.26 7.64939C10.407 7.26245 10.5003 6.80278 10.5003 6.22217H11.2781C11.2781 7.06567 11.1039 7.70617 10.8593 8.22456C11.4212 8.82422 11.8669 9.48067 12.0357 9.98778C12.3032 10.7912 12.2235 11.632 11.8276 12.1819C11.525 12.6019 11.0533 12.8333 10.5003 12.8333ZM10.4498 8.92417C10.3067 9.13028 10.1593 9.31617 10.02 9.49117C9.6366 9.97339 9.33366 10.3549 9.33366 10.8888C9.33366 11.8529 9.96833 12.0555 10.5003 12.0555C10.8052 12.0555 11.0397 11.9451 11.1968 11.7269C11.4457 11.3816 11.485 10.7955 11.2983 10.2339C11.1712 9.85361 10.8511 9.37761 10.4498 8.92417Z"
 									fill="#B5BDDB"
@@ -139,9 +133,7 @@ export default function Home() {
 								></path>
 							</g>
 							<defs>
-								<clipPath
-									id="clip0_16_63"
-								>
+								<clipPath id="clip0_16_63">
 									<rect
 										width="13"
 										height="14"
@@ -151,7 +143,54 @@ export default function Home() {
 							</defs>
 						</svg>
 						{Gas().gwei}&nbsp;
-            <span className="light-text">Gwei</span>
+						<span className="light-text">Gwei</span>
+					</span>
+					<span className="analytics__icon hide-mobile">
+						<svg
+							width="11"
+							height="16"
+							viewBox="0 0 11 16"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<g clipPath="url(#clip0_317_267)">
+								<path
+									d="M5.05058 0L4.94043 0.364667V10.9417L5.05091 11.0487L10.1015 8.14667L5.05091 0H5.05058Z"
+									fill="#B5BDDB"
+								/>
+								<path
+									d="M5.05095 0L0 8.14667L5.05095 11.0487V0Z"
+									fill="#B5BDDB"
+								/>
+								<path
+									d="M5.05124 11.9786L4.98926 12.0523V15.8203L5.05124 15.997L10.1056 9.07764L5.05124 11.9783V11.9786Z"
+									fill="#B5BDDB"
+								/>
+								<path
+									d="M5.05095 15.9966V11.978L0 9.07764L5.05095 15.9963V15.9966Z"
+									fill="#B5BDDB"
+								/>
+								<path
+									d="M5.05176 11.0487L10.1027 8.14671L5.05176 5.91504V11.0487Z"
+									fill="#B5BDDB"
+								/>
+								<path
+									d="M0 8.14637L5.05095 11.0484V5.91504L0 8.14637Z"
+									fill="#B5BDDB"
+								/>
+							</g>
+							<defs>
+								<clipPath id="clip0_317_267">
+									<rect
+										width="10.1053"
+										height="16"
+										fill="white"
+									/>
+								</clipPath>
+							</defs>
+						</svg>
+						{EthPrice()}&nbsp;
+						<span className="light-text">USD</span>
 					</span>
 				</div>
 			</Container>

@@ -51,6 +51,7 @@ h1 {
 
 .light-text {
   color: var(--text-color-light);
+  font-weight: 400;
 }
 
 .project-grid {
@@ -96,11 +97,11 @@ h1 {
 
 .analytics {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
   position: absolute;
   transform: translateY(-2rem);
   background-color: var(--color-highlight);
-  padding: 0.25rem 1rem;
+  padding: 0.25rem 0.75rem;
   border-radius: 0.375rem;
   font-size: 0.875rem;
 }
@@ -111,7 +112,7 @@ h1 {
 }
 
 .analytics__icon svg {
-  margin-right: 0.5rem;
+  margin-right: 0.325rem;
 }
 
 @media screen and (min-width: 40em) {
@@ -131,5 +132,11 @@ h1 {
 @media screen and (min-width: 60em) {
   .project-grid {
     grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media screen and (max-width: 40em) {
+  .hide-mobile {
+    display: none;
   }
 }
