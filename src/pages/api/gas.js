@@ -7,14 +7,14 @@ export default async function handler(req, res) {
     const highGas = data.result.FastGasPrice
 
     let message
-    if (lowGas < 40) {
-      message = `Amazing time to make transactions!`
-    } else if (lowGas < 60) {
+    if (lowGas < 30) {
+      message = 'Amazing time to make transactions!'
+    } else if (lowGas < 50) {
       message = 'Good time to make transactions!'
     } else if (lowGas < 80) {
-      message = 'Decent time to make transactions, could be better.'
-    } else if (lowGas > 100) {
-      message = 'Gas is rather high, consider waiting to save money.'
+      message = 'You can probably wait a bit to save money, but not a horrible time to make transactions.'
+    } else if (lowGas > 80) {
+      message = 'Gas is pretty high, consider waiting to save money.'
     }
 
     res.status(200).json({

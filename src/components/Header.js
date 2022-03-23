@@ -23,7 +23,7 @@ export default function Header() {
               </a>
             </Link>
             <Link href="/estimates">
-              <a className={["header__link", router.pathname == "/estimate" ? "header__link--active" : ""].join(" ")}>
+              <a className={["header__link", router.pathname == "/estimates" ? "header__link--active" : ""].join(" ")}>
                 Estimates
               </a>
             </Link>
