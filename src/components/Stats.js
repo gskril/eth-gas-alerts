@@ -30,7 +30,22 @@ export const EthPrice = () => {
   if (error) return 'Error'
   if (!data) return '____.__'
 
-  return data
+  let ethString = data.toString()
+  // get first character of ethString
+  let firstChar = ethString.charAt(0)
+  // get the rest of the string
+  let restOfString = ethString.substring(1)
+  ethString = firstChar + ',' + restOfString
+
+  // if there's only one character after the '.', add a 0
+  if (ethString.length === 7) {
+    ethString = ethString + '0'
+  }
+
+  return {
+    num: data,
+    str: ethString
+  }
 }
 
 export function Stats() {
@@ -139,7 +154,7 @@ export function Stats() {
             </clipPath>
           </defs>
         </svg>
-        {EthPrice()}&nbsp;
+        {EthPrice().str}&nbsp;
         <span className="light-text">USD</span>
       </span>
 

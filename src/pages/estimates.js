@@ -14,7 +14,7 @@ export default function Home() {
   const gasPriceEstimate = (gasAmount) => {
     // 1 ether = 1000000000000000000 wei
     return `$${parseFloat(
-      gasAmount * gasPrice * 0.000000001 * EthPrice()
+      gasAmount * gasPrice * 0.000000001 * EthPrice().num
     ).toFixed(2)}`
   }
 
