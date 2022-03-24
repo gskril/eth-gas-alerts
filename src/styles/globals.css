@@ -54,67 +54,6 @@ h1 {
   font-weight: 400;
 }
 
-.project-grid {
-  display: grid;
-  gap: 2rem;
-  grid-template-columns: 1fr;
-  justify-content: space-around;
-}
-
-.project {
-  padding: 1rem;
-  background-color: #e4f2ff;
-  border-radius: 0.5rem;
-}
-
-.project__name {
-  font-size: 1.25rem;
-  font-weight: bold;
-  margin-bottom: 1.25rem;
-}
-
-.project__actions {
-  display: grid;
-  gap: 1rem;
-}
-
-.project summary {
-  outline: none !important;
-}
-
-.project summary:hover {
-  cursor: pointer;
-}
-
-.project__action-name {
-  margin-left: 0.125rem;
-}
-
-.project__action-functions {
-  font-size: .875rem;
-  color: var(--text-color-light);
-}
-
-.analytics {
-  display: flex;
-  gap: 1rem;
-  position: absolute;
-  transform: translateY(-2rem);
-  background-color: var(--color-highlight);
-  padding: 0.25rem 0.75rem;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-}
-
-.analytics__icon {
-  display: flex;
-  align-items: center;
-}
-
-.analytics__icon svg {
-  margin-right: 0.325rem;
-}
-
 @media screen and (min-width: 40em) {
   h1 {
     font-size: 2.875rem;
@@ -123,20 +62,10 @@ h1 {
   .title {
     padding: 4rem 0 5rem;
   }
-
-  .project-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media screen and (min-width: 60em) {
-  .project-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
 }
 
 @media screen and (max-width: 40em) {
   .hide-mobile {
-    display: none;
+    display: none !important;
   }
 }

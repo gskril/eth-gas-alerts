@@ -2,7 +2,6 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useState } from 'react'
 
-import useSWR from 'swr'
 import Slider from 'rc-slider'
 import 'rc-slider/assets/index.css'
 
@@ -42,10 +41,12 @@ export default function Home() {
   return (
 		<>
 			<Head>
-				<title>Gas Estimates</title>
+				<title>
+					Ethereum Transaction Fee Estimates | ETH Gas Alerts
+				</title>
 				<meta
 					name="description"
-					content="Real-time gas price estimates for popular Ethereum protocols."
+					content="Transaction fee estimates for popular Ethereum protocols"
 				/>
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
@@ -59,7 +60,7 @@ export default function Home() {
 			<main>
 				<Container>
 					<h1 className="title">
-            Transaction fee estimates for popular Ethereum protocols
+						Transaction fee estimates for popular Ethereum protocols
 					</h1>
 
 					<Slider
@@ -155,6 +156,61 @@ export default function Home() {
 					</div>
 				</Container>
 			</main>
+
+			<style jsx>{`
+				.project-grid {
+					display: grid;
+					gap: 2rem;
+					grid-template-columns: 1fr;
+					justify-content: space-around;
+				}
+
+				.project {
+					padding: 1rem;
+					background-color: #e4f2ff;
+					border-radius: 0.5rem;
+				}
+
+				.project__name {
+					font-size: 1.25rem;
+					font-weight: bold;
+					margin-bottom: 1.25rem;
+				}
+
+				.project__actions {
+					display: grid;
+					gap: 1rem;
+				}
+
+				.project summary {
+					outline: none !important;
+				}
+
+				.project summary:hover {
+					cursor: pointer;
+				}
+
+				.project__action-name {
+					margin-left: 0.125rem;
+				}
+
+				.project__action-functions {
+					font-size: 0.875rem;
+					color: var(--text-color-light);
+				}
+
+				@media screen and (min-width: 40em) {
+					.project-grid {
+						grid-template-columns: repeat(2, 1fr);
+					}
+				}
+
+				@media screen and (min-width: 60em) {
+					.project-grid {
+						grid-template-columns: repeat(3, 1fr);
+					}
+				}
+			`}</style>
 		</>
   )
 }

@@ -18,7 +18,7 @@ export default function Header() {
           </Link>
           <div className="header__nav">
             <Link href="/">
-              <a className={["header__link", "header__link--mobile-only", router.pathname == "/" ? "header__link--active" : ""].join(" ")}>
+              <a className={["header__link", router.pathname == "/" ? "header__link--active" : ""].join(" ")}>
                 Live Gas
               </a>
             </Link>
@@ -70,6 +70,11 @@ export default function Header() {
           }
 
           @media (max-width: 40em) {
+            .header__nav {
+              gap: 1.5rem;
+              font-size: 0.875rem;
+            }
+
             .header__link--mobile-only {
               display: none;
             }

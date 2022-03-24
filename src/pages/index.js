@@ -8,10 +8,10 @@ export default function Home() {
   return (
 		<>
 			<Head>
-				<title>Gas Estimates</title>
+				<title>ETH Gas Alerts</title>
 				<meta
 					name="description"
-					content="Real-time gas price estimates for popular Ethereum protocols."
+					content="Human-readable scale for Ethereum gas prices"
 				/>
 				<link rel="icon" href="/favicon.ico" />
 			</Head>

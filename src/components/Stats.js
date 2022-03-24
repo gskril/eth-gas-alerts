@@ -142,6 +142,28 @@ export function Stats() {
         {EthPrice()}&nbsp;
         <span className="light-text">USD</span>
       </span>
+
+      <style jsx>{`
+        .analytics {
+          display: flex;
+          gap: 1rem;
+          position: absolute;
+          transform: translateY(-2rem);
+          background-color: var(--color-highlight);
+          padding: 0.25rem 0.75rem;
+          border-radius: 0.375rem;
+          font-size: 0.875rem;
+        }
+
+        .analytics__icon {
+          display: flex;
+          align-items: center;
+        }
+
+        .analytics__icon svg {
+          margin-right: 0.325rem;
+        }
+      `}</style>
     </div>
   )
 }
