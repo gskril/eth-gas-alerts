@@ -1,4 +1,4 @@
-require("dotenv").config()
+require("dotenv").config({ path: "../.env" })
 const axios = require("axios").default
 const twitter = require("./twitter")
 
@@ -33,11 +33,11 @@ function startGasMonitor() {
 				let time = res.headers.date.slice(-12)
 				let message
 				
-				if (averageGas <= 40) {
+				if (averageGas <= 30) {
 					message = "Amazing time to make $ETH transactions!"
-				} else if (averageGas <= 50) {
+				} else if (averageGas <= 40) {
 					message = "Great time to make $ETH transactions!"
-				} else if (averageGas <= 60) {
+				} else if (averageGas <= 50) {
 					message = "Good time to make $ETH transactions!"
 				} else if (averageGas <= 80) {
 					message = "Not a bad time to make $ETH transactions!"

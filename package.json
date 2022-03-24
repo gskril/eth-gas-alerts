@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "start:backend": "cd backend && yarn start"
   },
   "dependencies": {
     "eslint-plugin-react-hooks": "^4.3.0",
