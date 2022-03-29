@@ -3,19 +3,20 @@ const axios = require("axios").default
 const twitter = require("./twitter")
 
 const minutes = process.env.MINS_BEFORE_STARTING ? process.env.MINS_BEFORE_STARTING : 0
-if (minutes === 0) {
+if (minutes == 0) {
 	startGasMonitor()
+	console.log(`Started gas monitor with target of ${process.env["TARGET_GAS_PRICE"]} gwei`)
 } else {
-	console.log(`Waiting ${minutes} minutes before checking gas to tweet`)
+	console.log(`Waiting ${minutes} minutes before checking gas to tweet (${process.env["TARGET_GAS_PRICE"]} gwei target)`)
 	setTimeout(() => {
 		startGasMonitor()
 	}, minutes * 60 * 1000)
 }
 
-// Update twitter location with live gas price every minute
+// Update twitter location with live gas price every 45 secs
 setInterval(()=> {
 	gasTwitterMonitorConstant()
-}, 50*1000)
+}, 45*1000)
 
 function startGasMonitor() {
 	axios
