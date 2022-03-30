@@ -41,9 +41,7 @@ export default function Home() {
   return (
 		<>
 			<Head>
-				<title>
-					Ethereum Transaction Fee Estimates | ETH Gas Alerts
-				</title>
+				<title>Ethereum Gas Estimates</title>
 				<meta
 					name="description"
 					content="Transaction fee estimates for popular Ethereum protocols"
@@ -60,7 +58,7 @@ export default function Home() {
 			<main>
 				<Container>
 					<h1 className="title">
-						Transaction fee estimates for popular Ethereum protocols
+						ETH Gas Estimates
 					</h1>
 
 					<Slider

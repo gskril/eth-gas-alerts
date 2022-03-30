@@ -3,12 +3,18 @@ import Head from 'next/head'
 import Container from '../components/Container'
 import Header from '../components/Header'
 import { Gas, Stats } from '../components/Stats'
+import Scale from '../components/Scale'
 
 export default function Home() {
-  return (
+	const gweiString = Gas().gwei
+
+	return (
 		<>
 			<Head>
-				<title>ETH Gas Alerts</title>
+				<title>
+					{gweiString == '__' ? '' : `${gweiString} Gwei | `}
+					ETH Gas Alerts
+				</title>
 				<meta
 					name="description"
 					content="Human-readable scale for Ethereum gas prices"
@@ -24,11 +30,10 @@ export default function Home() {
 
 			<main>
 				<Container>
-					<h1 className="title">
-            {Gas().message}
-					</h1>
+					<h1 className="title">{Gas().message}</h1>
+					<Scale />
 				</Container>
 			</main>
 		</>
-  )
+	)
 }
