@@ -10,7 +10,7 @@ import Container from '../components/Container'
 import Header from '../components/Header'
 import { Gas, EthPrice, Stats } from '../components/Stats'
 
-export default function Home() {
+export default function Estimates() {
   const gasPriceEstimate = (gasAmount) => {
     // 1 ether = 1000000000000000000 wei
     return `$${parseFloat(
