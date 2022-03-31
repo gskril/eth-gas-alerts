@@ -34,6 +34,11 @@ function startGasMonitor() {
 				let time = res.headers.date.slice(-12)
 				let message
 				
+				// Every so often, Etherscan has a bug and shows 1 gwei. We'll exclude that
+				if (averageGas < 5) {
+					return
+				}
+
 				if (averageGas <= 30) {
 					message = "Amazing time to make $ETH transactions!"
 				} else if (averageGas <= 40) {
