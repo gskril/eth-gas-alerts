@@ -19,7 +19,6 @@ export default function Home() {
 					name="description"
 					content="Human-readable scale for Ethereum gas prices"
 				/>
-				<link rel="icon" href="/favicon.ico" />
 			</Head>
 
 			<Header />

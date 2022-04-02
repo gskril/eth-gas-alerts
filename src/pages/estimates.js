@@ -53,7 +53,6 @@ export default function Estimates() {
 					name="description"
 					content="Transaction fee estimates for popular Ethereum protocols"
 				/>
-				<link rel="icon" href="/favicon.ico" />
 			</Head>
 
 			<Header />

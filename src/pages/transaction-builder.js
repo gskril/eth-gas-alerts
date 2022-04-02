@@ -24,7 +24,6 @@ export default function TransactionBuilder() {
 					content="Enter the amount of gas a transaction requires, and we'll estimate the cost of the transaction."
 				/>
 				<meta name="robots" content="noindex,nofollow" />
-				<link rel="icon" href="/favicon.ico" />
 			</Head>
 
 			<Header />
