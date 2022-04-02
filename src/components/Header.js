@@ -69,10 +69,9 @@ export default function Header() {
             font-weight: 700;
           }
 
-          @media (max-width: 40em) {
+          @media screen and (max-width: 40em) {
             .header__nav {
               gap: 1.5rem;
-              font-size: 0.875rem;
             }
 
             .header__link--mobile-only {

@@ -32,11 +32,12 @@ export default function Scale() {
 				{`
 					.scale {
 						position: relative;
+						--scale-height: 2rem;
 					}
 
 					.scale__background {
 						width: 100%;
-						height: 2rem;
+						height: var(--scale-height);
 						border-radius: 1rem;
 						background: linear-gradient(
 							90deg,
@@ -48,7 +49,7 @@ export default function Scale() {
 
 					.scale__bar {
 						position: absolute;
-						height: 2.75rem;
+						height: calc(var(--scale-height) + 0.75rem);
 						width: 0.25rem;
 						background: var(--text-color-dark);
 						border-radius: 1rem;
@@ -65,10 +66,16 @@ export default function Scale() {
 						width: 100%;
 						justify-content: space-between;
 						position: absolute;
-						bottom: -2rem;
+						bottom: calc(var(--scale-height) * -1);
 					}
 
 					@media screen and (max-width: 40em) {
+						.scale {
+							--scale-height: 1.5rem;
+						}
+						.scale__labels {
+							bottom: calc(var(--scale-height) * -1 - 0.5rem);
+						}
 						.scale__label--desktop {
 							display: none;
 						}

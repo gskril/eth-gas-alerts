@@ -25,6 +25,13 @@ export default function Estimates() {
     min: 0,
     max: 150,
     step: 1,
+		handleStyle: [
+			{
+				width: '20px',
+				height: '20px',
+				marginTop: '-8px'
+			}
+		],
     marks: { 0: '0', 25: '25', 50: "50", 75: "75", 100: '100', 125: '125', 150: '150' },
   }
 
@@ -165,7 +172,7 @@ export default function Estimates() {
 
 				.project {
 					padding: 1rem;
-					background-color: #e4f2ff;
+					background-color: var(--color-highlight);
 					border-radius: 0.5rem;
 				}
 

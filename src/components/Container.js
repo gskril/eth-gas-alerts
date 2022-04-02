@@ -7,11 +7,11 @@ export default function Container({ children }) {
         .container {
           margin: 0 auto;
           max-width: 70rem;
-          padding-left: 1rem;
-          padding-right: 1rem;
+          padding-left: 1.25rem;
+          padding-right: 1.25rem;
         }
 
-        @media (min-width: 40em) {
+        @media screen and (min-width: 40em) {
           .container {
             padding-left: 2rem;
             padding-right: 2rem;
