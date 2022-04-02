@@ -65,7 +65,7 @@ export default function Estimates() {
 			<main>
 				<Container>
 					<h1 className="title">
-						ETH Gas Estimates
+						Transaction fee estimates for popular Ethereum protocols
 					</h1>
 
 					<Slider
@@ -165,7 +165,7 @@ export default function Estimates() {
 			<style jsx>{`
 				.project-grid {
 					display: grid;
-					gap: 2rem;
+					gap: 1.5rem;
 					grid-template-columns: 1fr;
 					justify-content: space-around;
 				}
@@ -207,6 +207,7 @@ export default function Estimates() {
 				@media screen and (min-width: 40em) {
 					.project-grid {
 						grid-template-columns: repeat(2, 1fr);
+						gap: 2rem;
 					}
 				}
 

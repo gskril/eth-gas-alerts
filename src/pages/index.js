@@ -34,6 +34,18 @@ export default function Home() {
 					<Scale />
 				</Container>
 			</main>
+
+			<style jsx>
+				{`
+					@media screen and (min-width: 40em) {
+						.title {
+							text-align: center;
+							margin-left: auto;
+							margin-right: auto;
+						}
+					}
+				`}
+			</style>
 		</>
 	)
 }
