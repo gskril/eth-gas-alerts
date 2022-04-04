@@ -1,18 +1,15 @@
-# ETH Gas Tracker
+# ETH Gas Alerts
 
-Tweet when gas on the ETH network is low.  
-Update the Twitter profile's location every minute with the live gas price.
+The best place to get all your information about gas on the Ethereum network. Real-time gas meter along a human-readable scale, and transaction fee estimates for popular Ethereum protocols.
 
-Follow [@ETHGasAlerts](https://twitter.com/ETHGasAlerts) on Twitter for alerts.
+## Getting Started
 
-## How To Use
-1. Clone the project
-2. Go to the project directory
-3. Install dependencies using ```npm install```
-4. Change the name of .env.example to .env and configure the following:
-    - [Etherscan API Key](https://docs.etherscan.io/getting-started/creating-an-account)
-	- Minimum time to wait between tweets, regardless of gas price
-	- Gas price that triggers a tweet
-	- Twitter API consumer keys from the [developer portal](https://developer.twitter.com/)
-	- Twitter API access tokens from the account you want to tweet from
-5. Start the monitor using ```npm start```
+1. Install dependencides with `yarn install`
+1. Start the development server with `yarn dev`
+2. Open [http://localhost:3000](http://localhost:3000) for a live preview
+
+## Contribute
+
+To add projects to the gas estimates page, create a pull request with your additions to `/src/data.json`. Be sure to include all information, using existing entries as examples.
+
+In your pull request, please include at least one Etherscan link to a  transaction that calls the functions listed in the json file.

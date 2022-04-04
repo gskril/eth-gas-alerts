@@ -1,16 +1,24 @@
 {
   "name": "eth-gas-alerts",
-  "version": "1.0.0",
-  "description": "Tweet when gas on the ETH network is low.",
-  "main": "index.js",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "start": "node index"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "start:backend": "cd backend && yarn start"
   },
-  "author": "Greg Skriloff",
-  "license": "ISC",
   "dependencies": {
-    "axios": "^0.21.4",
-    "dotenv": "^10.0.0",
-    "twit": "^2.2.11"
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "next": "12.1.0",
+    "rc-slider": "^10.0.0-alpha.5",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "swr": "^1.2.2"
+  },
+  "devDependencies": {
+    "eslint": "8.11.0",
+    "eslint-config-next": "12.1.0"
   }
 }

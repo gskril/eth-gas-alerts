@@ -1,13 +1,22 @@
-require("dotenv").config()
+require("dotenv").config({ path: "../.env" })
 const axios = require("axios").default
 const twitter = require("./twitter")
 
-startGasMonitor()
+const minutes = process.env.MINS_BEFORE_STARTING ? process.env.MINS_BEFORE_STARTING : 0
+if (minutes == 0) {
+	startGasMonitor()
+	console.log(`Started gas monitor with target of ${process.env["TARGET_GAS_PRICE"]} gwei`)
+} else {
+	console.log(`Waiting ${minutes} minutes before checking gas to tweet (${process.env["TARGET_GAS_PRICE"]} gwei target)`)
+	setTimeout(() => {
+		startGasMonitor()
+	}, minutes * 60 * 1000)
+}
 
-// Update twitter location with live gas price every minute
+// Update twitter location with live gas price every 45 secs
 setInterval(()=> {
 	gasTwitterMonitorConstant()
-}, 60*1000)
+}, 45*1000)
 
 function startGasMonitor() {
 	axios
@@ -25,11 +34,20 @@ function startGasMonitor() {
 				let time = res.headers.date.slice(-12)
 				let message
 				
-				if (averageGas <= 40) {
+				// Handle Etherscan bug when it reports 1 gwei
+				if (averageGas < 5) {
+					console.log(`Etherscan bug: reported gas price of ${averageGas} gwei. Checking again in 1 minute`)
+
+					return setTimeout(() => {
+						startGasMonitor()
+					}, 60*1000);
+				}
+
+				if (averageGas <= 30) {
 					message = "Amazing time to make $ETH transactions!"
-				} else if (averageGas <= 50) {
+				} else if (averageGas <= 40) {
 					message = "Great time to make $ETH transactions!"
-				} else if (averageGas <= 60) {
+				} else if (averageGas <= 50) {
 					message = "Good time to make $ETH transactions!"
 				} else if (averageGas <= 80) {
 					message = "Not a bad time to make $ETH transactions!"
@@ -46,7 +64,7 @@ function startGasMonitor() {
 				}, process.env["MINS_BETWEEN_TWEETS"]*60*1000);
 			} else {
 				// Check gas every minute if it's not below the target
-				console.log(`Gas is expensive right now (${averageGas} gwei). Checking again in 1 min`)
+				console.log(`Gas is expensive right now (${averageGas} gwei)`)
 				setTimeout(() => {
 					startGasMonitor()
 				}, 60*1000);

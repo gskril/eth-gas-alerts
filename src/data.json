@@ -1,0 +1,54 @@
+[
+  {
+    "name": "Ethereum Basics",
+    "actions": [
+      {
+        "name": "Transfer ETH",
+        "contractFunctions": [
+          {
+            "name": "transfer",
+            "gas": 21000
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Ethereum Name Service",
+    "link": "https://ens.domains",
+    "contractAddress": "0x283af0b28c62c092c9727f1ee09c02ca627eb7f5",
+    "actions": [
+      {
+        "name": "Register .eth name",
+        "contractFunctions": [
+          {
+            "name": "commit",
+            "gas": 46267
+          }, 
+          {
+            "name": "registerWithConfig",
+            "gas": 280000
+          }
+        ]
+      },
+      {
+        "name": "Renew .eth name",
+        "contractFunctions": [
+          {
+            "name": "renew",
+            "gas": 111000
+          }
+        ]
+      },
+      {
+        "name": "Set text record",
+        "contractFunctions": [
+          {
+            "name": "setText",
+            "gas": 60000
+          }
+        ]
+      }
+    ]
+  }
+]
