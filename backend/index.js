@@ -34,9 +34,13 @@ function startGasMonitor() {
 				let time = res.headers.date.slice(-12)
 				let message
 				
-				// Every so often, Etherscan has a bug and shows 1 gwei. We'll exclude that
+				// Handle Etherscan bug when it reports 1 gwei
 				if (averageGas < 5) {
-					return
+					console.log(`Etherscan bug: reported gas price of ${averageGas} gwei. Checking again in 1 minute`)
+
+					return setTimeout(() => {
+						startGasMonitor()
+					}, 60*1000);
 				}
 
 				if (averageGas <= 30) {
