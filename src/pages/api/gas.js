@@ -11,9 +11,9 @@ export default async function handler(req, res) {
       message = 'Amazing time to make transactions!'
     } else if (lowGas < 50) {
       message = 'Good time to make transactions!'
-    } else if (lowGas <= 80) {
-      message = 'Not a bad time to make transactions.'
-    } else if (lowGas > 80) {
+    } else if (lowGas <= 70) {
+      message = 'Decent time to make transactions.'
+    } else if (lowGas > 70) {
       message = 'Gas is pretty high, consider waiting to save money.'
     }
 
