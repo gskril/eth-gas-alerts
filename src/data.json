@@ -41,6 +41,15 @@
         ]
       },
       {
+        "name": "Register subdomain",
+        "contractFunctions": [
+          {
+            "name": "setSubnodeRecord",
+            "gas": 74380
+          }
+        ]
+      },
+      {
         "name": "Set text record",
         "contractFunctions": [
           {
