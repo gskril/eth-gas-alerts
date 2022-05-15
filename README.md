@@ -5,8 +5,9 @@ The best place to get all your information about gas on the Ethereum network. Re
 ## Getting Started
 
 1. Install dependencides with `yarn install`
-1. Start the development server with `yarn dev`
-2. Open [http://localhost:3000](http://localhost:3000) for a live preview
+2. Rename `.env.example` to `.env` and add your Etherscan API key
+3. Start the development server with `yarn dev`
+4. Open [http://localhost:3000](http://localhost:3000) for a live preview
 
 ## Contribute
 
