@@ -153,6 +153,15 @@
             "gas": 75000
           }
         ]
+      },
+      {
+        "name": "Revoke Access",
+        "contractFunctions": [
+          {
+            "name": "setApprovalForAll",
+            "gas": 29657
+          }
+        ]
       }
     ]
   }
