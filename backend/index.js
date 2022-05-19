@@ -10,6 +10,10 @@ const intialDate = () => {
 		? process.env.MINS_BEFORE_STARTING
 		: 0
 
+	console.log(
+		`Waiting ${minsBeforeStarting} mins before tweeting with a target of ${process.env.TARGET_GAS_PRICE} gwei`
+	)
+
 	const minutes = process.env.MINS_BETWEEN_TWEETS - minsBeforeStarting
 	const now = new Date()
 	now.setMinutes(now.getMinutes() - minutes)

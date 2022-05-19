@@ -21,13 +21,18 @@ T.get('account/verify_credentials')
 function updateLocation(gas) {
 	T.post('account/update_profile', {
 		location: `⛽ ${gas.live} gwei  ⏰ Est. ${gas.hour} gwei in the hour`,
-	}).catch((err) => console.log('Error updating twitter location', err))
+		name: `ETH Gas Alerts (${gas.live} gwei)`,
+	}).catch((err) => console.log('Error updating profile', err))
 }
 
 // Tweet
 function tweet(msg, gas) {
 	T.post('statuses/update', { status: msg })
-		.then(console.log(`Tweet sent successfully at ${gas} gwei`))
+		.then(
+			console.log(
+				`Tweet sent at ${gas} gwei. Waiting ${process.env.MINS_BETWEEN_TWEETS} mins before trying again`
+			)
+		)
 		.catch((err) => console.log('Error sending tweet', err))
 }
 
