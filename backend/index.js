@@ -1,75 +1,64 @@
-require("dotenv").config()
-const axios = require("axios").default
-const twitter = require("./twitter")
+require('dotenv').config()
+const axios = require('axios').default
+const twitter = require('./twitter')
+const cron = require('node-cron')
+const fs = require('fs')
 
-const minutes = process.env.MINS_BEFORE_STARTING ? process.env.MINS_BEFORE_STARTING : 0
-if (minutes == 0) {
-	startGasMonitor()
-	console.log(`Started gas monitor with target of ${process.env["TARGET_GAS_PRICE"]} gwei`)
-} else {
-	console.log(`Waiting ${minutes} minutes before checking gas to tweet (${process.env["TARGET_GAS_PRICE"]} gwei target)`)
-	setTimeout(() => {
-		startGasMonitor()
-	}, minutes * 60 * 1000)
+// Set the initial date according to MINS_BEFORE_STARTING
+const intialDate = () => {
+	const minsBeforeStarting = process.env.MINS_BEFORE_STARTING
+		? process.env.MINS_BEFORE_STARTING
+		: 0
+
+	const minutes = process.env.MINS_BETWEEN_TWEETS - minsBeforeStarting
+	const now = new Date()
+	now.setMinutes(now.getMinutes() - minutes)
+	return now
 }
 
-// Update twitter location with live gas price every 30 secs
-setInterval(()=> {
-	gasTwitterMonitorConstant()
-}, 30*1000)
+// Set last tweeted as start time
+fs.writeFileSync('./lastTweeted.json', JSON.stringify(intialDate()))
 
-function startGasMonitor() {
-	axios
-		.get("https://gas.best/stats")
-		.then(res => {
-			const liveGas = res.data.pending.fee
-			const est60 = res.data.forecast['1 hour']
-
-			if (liveGas <= process.env["TARGET_GAS_PRICE"]) {
-				let time = res.headers.date.slice(-12)
-				
-				// Handle Etherscan bug when it reports 1 gwei
-				if (liveGas < 5) return
-
-				let tweet = `⛽️ Gas is currently ${liveGas} gwei (as of ${time}) \n\n${
-					est60 < liveGas - 4
-						? `⚡️ Expected to drop to ${est60} gwei within the hour`
-						: 'Not expected to go much lower within the hour'
-				}`
-				console.log('\n\n' + tweet)
-				twitter.tweet(tweet, liveGas)
-				console.log(`Waiting ${process.env["MINS_BETWEEN_TWEETS"]} minutes before checking again`)
-				// Wait specified amount of time before checking for gas again
-				setTimeout(() => {
-					startGasMonitor()
-				}, process.env["MINS_BETWEEN_TWEETS"]*60*1000);
-			} else {
-				// Check gas every minute if it's not below the target
-				console.log(`Gas is expensive right now (${liveGas} gwei)`)
-				setTimeout(() => {
-					startGasMonitor()
-				}, 60*1000);
+// Run job every 30 seconds
+cron.schedule('*/30 * * * * *', async () => {
+	const gas = await axios
+		.get('https://gas.best/stats')
+		.then(async (res) => {
+			const data = await res.data
+			return {
+				live: data.pending.fee,
+				hour: data.forecast['1 hour'],
 			}
 		})
-    	.catch(err => {
-			console.log("Error fetching data from Etherscan API")
-			// Retry on failure
-			setTimeout(() => {
-				startGasMonitor()
-			}, 60*1000);
+		.catch((err) => {
+			console.log('Error fetching gas.', err)
+			return null
 		})
-}
 
-function gasTwitterMonitorConstant() {
-	axios
-		.get("https://gas.best/stats")
-		.then(res => {
-			const live = res.data.pending.fee
-			const est60 = res.data.forecast['1 hour']
+	// Stop on error or bug
+	if (gas === null || gas.live < 5) return
 
-			twitter.updateLocation(live, est60)
-		})
-    	.catch(err => {
-			console.log("Error fetching data from gas.best API")
-		})
-}
+	twitter.updateLocation(gas)
+
+	const now = new Date()
+	const lastTweeted = new Date(
+		JSON.parse(fs.readFileSync('./lastTweeted.json'))
+	)
+	const minsSinceLastTweet = Math.floor((now - lastTweeted) / 1000 / 60)
+	const minsToWait = process.env.MINS_BETWEEN_TWEETS - minsSinceLastTweet
+
+	if (minsToWait <= 0 && gas.live <= process.env.TARGET_GAS_PRICE) {
+		const timeStr = now.toISOString().slice(11, -5) + ' UTC'
+
+		const tweet = `⛽️ Gas is currently ${
+			gas.live
+		} gwei (as of ${timeStr}). ${
+			gas.hour < gas.live - 4
+				? `\n\n⚡️ Expected to drop to ${gas.hour} gwei within the hour`
+				: 'Great time to make $ETH transactions!'
+		}`
+
+		twitter.tweet(tweet, gas.live)
+		fs.writeFileSync('./lastTweeted.json', JSON.stringify(now))
+	}
+})
