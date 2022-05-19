@@ -18,11 +18,8 @@ T.get("account/verify_credentials")
 	})
 
 // Update location
-function updateLocation(gas) {
-	T.post("account/update_profile", { location: `Live gas: ${gas} gwei` })
-		.then(data => {
-			// console.log("Updated twitter location")
-		})
+function updateLocation(live, est60) {
+	T.post("account/update_profile", { location: `⛽ ${live} gwei  ⏰ Est. ${est60} gwei in the hour` })
 		.catch(err => {
 			console.log("Error updating twitter location", err)
 		})
