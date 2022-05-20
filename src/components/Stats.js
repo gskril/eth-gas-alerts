@@ -2,50 +2,36 @@ import useSWR from 'swr'
 
 const fetcher = (...args) => fetch(...args).then(res => res.json())
 
-export const Gas = () => {
-  const { data, error } = useSWR('/api/gas', fetcher, {
-    refreshInterval: 1000 * 30 // 30 seconds
+export const useStats = () => {
+  const { data, error } = useSWR('/api/stats', fetcher, {
+    refreshInterval: 1000 * 30
   })
 
   if (error) return {
-    gwei: 'Error',
-    message: 'Error fetching data'
+    'gas': {
+      'now': 'Error',
+      '5 min': 'Error',
+      '1 hour': 'Error',
+      'message': 'Error fetching data.'
+    },
+    'eth': {
+      'price': 'Error',
+    },
   }
+
   if (!data) return {
-    gwei: '__',
-    message: 'Loading data...'
+    'gas': {
+      'now': '___',
+      '5 min': '___',
+      '1 hour': '___',
+      'message': 'Loading...'
+    },
+    'eth': {
+      'price': '____.__',
+    },
   }
-
-  return {
-    gwei: data.low,
-    message: data.message
-  }
-}
-
-export const EthPrice = () => {
-  const { data, error } = useSWR('/api/eth', fetcher, {
-    refreshInterval: 30 * 1000
-  })
-
-  if (error) return 'Error'
-  if (!data) return '____.__'
-
-  let ethString = data.toString()
-  // get first character of ethString
-  let firstChar = ethString.charAt(0)
-  // get the rest of the string
-  let restOfString = ethString.substring(1)
-  ethString = firstChar + ',' + restOfString
-
-  // if there's only one character after the '.', add a 0
-  if (ethString.length === 7) {
-    ethString = ethString + '0'
-  }
-
-  return {
-    num: data,
-    str: ethString
-  }
+  
+  return data
 }
 
 export function Stats() {
@@ -107,7 +93,7 @@ export function Stats() {
             </clipPath>
           </defs>
         </svg>
-        {Gas().gwei}&nbsp;
+        {useStats().gas.now}&nbsp;
         <span className="light-text">Gwei</span>
       </span>
       <span className="analytics__icon hide-mobile">
@@ -154,7 +140,7 @@ export function Stats() {
             </clipPath>
           </defs>
         </svg>
-        {EthPrice().str}&nbsp;
+        {useStats().eth.price}&nbsp;
         <span className="light-text">USD</span>
       </span>
 

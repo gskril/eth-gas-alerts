@@ -2,17 +2,17 @@ import Head from 'next/head'
 
 import Container from '../components/Container'
 import Header from '../components/Header'
-import { Gas, Stats } from '../components/Stats'
+import { useStats, Stats } from '../components/Stats'
 import Scale from '../components/Scale'
 
 export default function Home() {
-	const gweiString = Gas().gwei
+	const gweiString = useStats().gas.now
 
 	return (
 		<>
 			<Head>
 				<title>
-					{gweiString == '__' ? '' : `${gweiString} Gwei | `}
+					{typeof(gweiString) === 'number' ? `${gweiString} Gwei | ` : ''}
 					ETH Gas Alerts
 				</title>
 				<meta
@@ -29,7 +29,7 @@ export default function Home() {
 
 			<main>
 				<Container>
-					<h1 className="title">{Gas().message}</h1>
+					<h1 className="title">{useStats().gas.message}</h1>
 					<Scale />
 				</Container>
 			</main>

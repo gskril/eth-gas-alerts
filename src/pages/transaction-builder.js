@@ -3,10 +3,10 @@ import { useState } from 'react'
 
 import Container from '../components/Container'
 import Header from '../components/Header'
-import { EthPrice, Stats } from '../components/Stats'
+import { useStats, Stats } from '../components/Stats'
 
 export default function TransactionBuilder() {
-  const ethNum = EthPrice().num
+  const ethNum = useStats().eth.price
 
   const [gasAmount, setGasAmount] = useState(0)
   const [gasPrice, setGasPrice] = useState(0)

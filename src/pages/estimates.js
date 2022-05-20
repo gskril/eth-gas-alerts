@@ -8,13 +8,15 @@ import 'rc-slider/assets/index.css'
 import data from '../data.json'
 import Container from '../components/Container'
 import Header from '../components/Header'
-import { Gas, EthPrice, Stats } from '../components/Stats'
+import { useStats, Stats } from '../components/Stats'
 
 export default function Estimates() {
+	const ethPrice = useStats().eth.price
+
   const gasPriceEstimate = (gasAmount) => {
     // 1 ether = 1000000000000000000 wei
     return `$${parseFloat(
-      gasAmount * gasPrice * 0.000000001 * EthPrice().num
+      gasAmount * gasPrice * 0.000000001 * ethPrice
     ).toFixed(2)}`
   }
 
@@ -38,11 +40,6 @@ export default function Estimates() {
   const handleSliderChange = (value) => {
     setSliderValue(value)
     setGasPrice(value)
-  }
-
-  const resetGasPrice = () => {
-    setGasPrice(Gas().gwei)
-    setSliderValue(Gas().gwei)
   }
 
   return (
@@ -75,7 +72,6 @@ export default function Estimates() {
 					<div style={{ marginTop: 40, marginBottom: 20 }}>
 						<b>Gwei for estimate: </b>
 						{sliderValue}
-						{/* <button onClick={resetGasPrice}>Reset</button> */}
 					</div>
 
 					<div className="project-grid">
