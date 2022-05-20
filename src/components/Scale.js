@@ -5,6 +5,8 @@ export default function Scale() {
 
 	// Base the percentage on the highest price of the meter
 	const scalePercentage = (useStats().gas.now / scale[scale.length - 1]) * 100
+	const gasLive = useStats().gas.now
+	const gasHourlyForecast = useStats().gas['1 hour']
 
 	return (
 		<>
@@ -27,11 +29,17 @@ export default function Scale() {
 					</div>
 				</div>
 			</div>
+			<p className="prediction">
+				{gasHourlyForecast + 2 < gasLive
+					? `Expected to drop to ${gasHourlyForecast} gwei in the next hour`
+					:	'Not expected to go much lower in the next hour'}
+			</p>
 
 			<style jsx>
 				{`
 					.scale {
 						position: relative;
+						margin-bottom: 5rem;
 						--scale-height: 2rem;
 					}
 
@@ -67,6 +75,12 @@ export default function Scale() {
 						justify-content: space-between;
 						position: absolute;
 						bottom: calc(var(--scale-height) * -1);
+					}
+
+					@media screen and (min-width: 40em) {
+						.prediction {
+							text-align: center;
+						}
 					}
 
 					@media screen and (max-width: 40em) {
