@@ -1,10 +1,10 @@
-import { Gas } from '../components/Stats'
+import { useStats } from '../components/Stats'
 
 export default function Scale() {
 	const scale = [0, 25, 50, 75, 100, 125, 150]
 
 	// Base the percentage on the highest price of the meter
-	const scalePercentage = (Gas().gwei / scale[scale.length - 1]) * 100
+	const scalePercentage = (useStats().gas.now / scale[scale.length - 1]) * 100
 
 	return (
 		<>
