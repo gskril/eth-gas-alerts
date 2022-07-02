@@ -54,12 +54,12 @@ cron.schedule('*/30 * * * * *', async () => {
 	if (minsToWait <= 0 && gas.live <= process.env.TARGET_GAS_PRICE) {
 		const timeStr = now.toISOString().slice(11, -5) + ' UTC'
 
-		const tweet = `⛽️ Gas is currently ${
+		const tweet = `⛽️ Gas on #Ethereum is currently ${
 			gas.live
 		} gwei (as of ${timeStr}). ${
-			gas.hour < gas.live - 4
+			gas.hour <= gas.live - 3
 				? `\n\n⚡️ Expected to drop to ${gas.hour} gwei within the hour`
-				: 'Great time to make $ETH transactions!'
+				: 'Great time to make transactions!'
 		}`
 
 		twitter.tweet(tweet, gas.live)
