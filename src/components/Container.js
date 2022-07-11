@@ -1,23 +1,23 @@
 export default function Container({ children }) {
-  return (
-    <div className="container">
-      {children}
+	return (
+		<div className="container">
+			{children}
 
-      <style jsx>{`
-        .container {
-          margin: 0 auto;
-          max-width: 70rem;
-          padding-left: 1.25rem;
-          padding-right: 1.25rem;
-        }
+			<style jsx>{`
+				.container {
+					margin: 0 auto;
+					max-width: 70rem;
+					padding-left: 1.25rem;
+					padding-right: 1.25rem;
+				}
 
-        @media screen and (min-width: 40em) {
-          .container {
-            padding-left: 2rem;
-            padding-right: 2rem;
-          }
-        }
-      `}</style>
-    </div>
-  )
+				@media screen and (min-width: 40em) {
+					.container {
+						padding-left: 2rem;
+						padding-right: 2rem;
+					}
+				}
+			`}</style>
+		</div>
+	)
 }

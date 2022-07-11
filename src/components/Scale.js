@@ -32,7 +32,7 @@ export default function Scale() {
 			<p className="prediction">
 				{gasHourlyForecast + 2 < gasLive
 					? `Expected to drop to ${gasHourlyForecast} gwei in the next hour`
-					:	'Not expected to go much lower in the next hour'}
+					: 'Not expected to go much lower in the next hour'}
 			</p>
 
 			<style jsx>

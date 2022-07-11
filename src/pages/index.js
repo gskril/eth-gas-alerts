@@ -12,7 +12,9 @@ export default function Home() {
 		<>
 			<Head>
 				<title>
-					{typeof(gweiString) === 'number' ? `${gweiString} Gwei | ` : ''}
+					{typeof gweiString === 'number'
+						? `${gweiString} Gwei | `
+						: ''}
 					ETH Gas Alerts
 				</title>
 				<meta

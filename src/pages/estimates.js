@@ -14,45 +14,45 @@ export default function Estimates() {
 	const ethPrice = useStats().eth.price
 	const LiveGasPrice = useStats().gas.now
 
-  const gasPriceEstimate = (gasAmount) => {
-    // 1 ether = 1000000000000000000 wei
-    return `$${parseFloat(
-      gasAmount * gasPrice * 0.000000001 * ethPrice
-    ).toFixed(2)}`
-  }
+	const gasPriceEstimate = (gasAmount) => {
+		// 1 ether = 1000000000000000000 wei
+		return `$${parseFloat(
+			gasAmount * gasPrice * 0.000000001 * ethPrice
+		).toFixed(2)}`
+	}
 
 	const [didMoveSlider, setDidMoveSlider] = useState(false)
-  const [sliderValue, setSliderValue] = useState(0)
-  const [gasPrice, setGasPrice] = useState(0)
+	const [sliderValue, setSliderValue] = useState(0)
+	const [gasPrice, setGasPrice] = useState(0)
 
 	useEffect(() => {
-		if (typeof(LiveGasPrice) === 'number' && !didMoveSlider) {
+		if (typeof LiveGasPrice === 'number' && !didMoveSlider) {
 			setGasPrice(LiveGasPrice)
 			setSliderValue(LiveGasPrice)
 		}
 	}, [LiveGasPrice, didMoveSlider])
 
-  const sliderProps = {
-    min: 0,
-    max: 100,
-    step: 1,
+	const sliderProps = {
+		min: 0,
+		max: 100,
+		step: 1,
 		handleStyle: [
 			{
 				width: '20px',
 				height: '20px',
-				marginTop: '-8px'
-			}
+				marginTop: '-8px',
+			},
 		],
-    marks: { 0: '0', 25: '25', 50: "50", 75: "75", 100: '100' },
-  }
+		marks: { 0: '0', 25: '25', 50: '50', 75: '75', 100: '100' },
+	}
 
-  const handleSliderChange = (value) => {
+	const handleSliderChange = (value) => {
 		setDidMoveSlider(true)
-    setSliderValue(value)
-    setGasPrice(value)
-  }
+		setSliderValue(value)
+		setGasPrice(value)
+	}
 
-  return (
+	return (
 		<>
 			<Head>
 				<title>Ethereum Gas Estimates</title>
@@ -92,14 +92,18 @@ export default function Estimates() {
 									key={stringToClass(project.name)}
 								>
 									<h2 className="project__name">
-                    {project.link
-                      ? <Link href={project.link}>
-                          <a target="_blank" rel="noreferrer">
-                            {project.name}
-                          </a>
-                        </Link>
-                      : project.name
-                    }
+										{project.link ? (
+											<Link href={project.link}>
+												<a
+													target="_blank"
+													rel="noreferrer"
+												>
+													{project.name}
+												</a>
+											</Link>
+										) : (
+											project.name
+										)}
 									</h2>
 									<div className="project__actions">
 										{project.actions.map((action) => {
@@ -118,44 +122,46 @@ export default function Estimates() {
 														action.name
 													)}
 												>
-                          <details>
-                            <summary>
-                              <span className="project__action-name">
-                                {action.name}:{' '}
-                                {gasPriceEstimate(
-                                  totalGas
-                                )}
-                              </span>
-                            </summary>
-                            <span className="project__action-functions">
-                              Transactions:{' '}
-                              {action.contractFunctions.map(
-                                (f, i) => {
-                                  const numberOfFunctions =
-                                    action
-                                      .contractFunctions
-                                      .length
+													<details>
+														<summary>
+															<span className="project__action-name">
+																{action.name}:{' '}
+																{gasPriceEstimate(
+																	totalGas
+																)}
+															</span>
+														</summary>
+														<span className="project__action-functions">
+															Transactions:{' '}
+															{action.contractFunctions.map(
+																(f, i) => {
+																	const numberOfFunctions =
+																		action
+																			.contractFunctions
+																			.length
 
-                                  return (
-                                    <>
-                                      {f.name}{' '}
-                                      {numberOfFunctions >
-                                      1
-                                        ? `(${gasPriceEstimate(
-                                            f.gas
-                                          )})`
-                                        : null}
-                                      {i <
-                                      numberOfFunctions -
-                                        1
-                                        ? ', '
-                                        : ''}
-                                    </>
-                                  )
-                                }
-                              )}
-                            </span>
-                          </details>
+																	return (
+																		<>
+																			{
+																				f.name
+																			}{' '}
+																			{numberOfFunctions >
+																			1
+																				? `(${gasPriceEstimate(
+																						f.gas
+																				  )})`
+																				: null}
+																			{i <
+																			numberOfFunctions -
+																				1
+																				? ', '
+																				: ''}
+																		</>
+																	)
+																}
+															)}
+														</span>
+													</details>
 												</div>
 											)
 										})}
@@ -223,11 +229,11 @@ export default function Estimates() {
 				}
 			`}</style>
 		</>
-  )
+	)
 }
 
 const stringToClass = (str) => {
-  // remove special characters then replace spaces with dashes
-  str = str.replace(/[^a-zA-Z0-9- ]/g, '').toLowerCase()
-  return str.replace(/ /g, '-')
+	// remove special characters then replace spaces with dashes
+	str = str.replace(/[^a-zA-Z0-9- ]/g, '').toLowerCase()
+	return str.replace(/ /g, '-')
 }

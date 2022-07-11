@@ -6,16 +6,16 @@ import Header from '../components/Header'
 import { useStats, Stats } from '../components/Stats'
 
 export default function TransactionBuilder() {
-  const ethNum = useStats().eth.price
+	const ethNum = useStats().eth.price
 
-  const [gasAmount, setGasAmount] = useState(0)
-  const [gasPrice, setGasPrice] = useState(0)
+	const [gasAmount, setGasAmount] = useState(0)
+	const [gasPrice, setGasPrice] = useState(0)
 
-  const feePrice = parseFloat(
-    gasAmount * gasPrice * 0.000000001 * ethNum
-  ).toFixed(2)
+	const feePrice = parseFloat(
+		gasAmount * gasPrice * 0.000000001 * ethNum
+	).toFixed(2)
 
-  return (
+	return (
 		<>
 			<Head>
 				<title>Ethereum Transaction Builder - Gas Costs</title>
@@ -57,5 +57,5 @@ export default function TransactionBuilder() {
 				</Container>
 			</main>
 		</>
-  )
+	)
 }
