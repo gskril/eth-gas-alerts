@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import Slider from 'rc-slider'
 import 'rc-slider/assets/index.css'
@@ -12,6 +12,7 @@ import { useStats, Stats } from '../components/Stats'
 
 export default function Estimates() {
 	const ethPrice = useStats().eth.price
+	const LiveGasPrice = useStats().gas.now
 
   const gasPriceEstimate = (gasAmount) => {
     // 1 ether = 1000000000000000000 wei
@@ -20,12 +21,20 @@ export default function Estimates() {
     ).toFixed(2)}`
   }
 
+	const [didMoveSlider, setDidMoveSlider] = useState(false)
   const [sliderValue, setSliderValue] = useState(0)
-  const [gasPrice, setGasPrice] = useState(0) // TODO: fix default value to be the current gas price
-  
+  const [gasPrice, setGasPrice] = useState(0)
+
+	useEffect(() => {
+		if (typeof(LiveGasPrice) === 'number' && !didMoveSlider) {
+			setGasPrice(LiveGasPrice)
+			setSliderValue(LiveGasPrice)
+		}
+	}, [LiveGasPrice, didMoveSlider])
+
   const sliderProps = {
     min: 0,
-    max: 150,
+    max: 100,
     step: 1,
 		handleStyle: [
 			{
@@ -34,10 +43,11 @@ export default function Estimates() {
 				marginTop: '-8px'
 			}
 		],
-    marks: { 0: '0', 25: '25', 50: "50", 75: "75", 100: '100', 125: '125', 150: '150' },
+    marks: { 0: '0', 25: '25', 50: "50", 75: "75", 100: '100' },
   }
 
   const handleSliderChange = (value) => {
+		setDidMoveSlider(true)
     setSliderValue(value)
     setGasPrice(value)
   }

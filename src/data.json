@@ -50,6 +50,15 @@
         ]
       },
       {
+        "name": "Import DNS name",
+        "contractFunctions": [
+          {
+            "name": "n/a",
+            "gas":  3800000
+          }
+        ]
+      },
+      {
         "name": "Set text record",
         "contractFunctions": [
           {
