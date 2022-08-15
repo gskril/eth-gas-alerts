@@ -39,8 +39,8 @@ cron.schedule('*/30 * * * * *', async () => {
 			return null
 		})
 
-	// Stop on error or bug
-	if (gas === null || gas.live < 5) return
+	// Stop on error
+	if (gas === null) return
 
 	twitter.updateLocation(gas)
 
