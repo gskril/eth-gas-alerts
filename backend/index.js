@@ -28,11 +28,6 @@ cron.schedule('*/30 * * * * *', async () => {
   const gas = await axios
     .get('https://gas.best/stats')
     .then(async (res) => {
-      if (!res.ok) {
-        console.log('Error fetching gas.', res)
-        return null
-      }
-
       const data = await res.data
       return {
         live: data.pending.fee,
