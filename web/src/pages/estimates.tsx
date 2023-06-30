@@ -1,13 +1,14 @@
+import { lightTheme } from '@ensdomains/thorin'
 import Head from 'next/head'
 import Link from 'next/link'
-import Slider from 'rc-slider'
+import Slider, { SliderProps } from 'rc-slider'
 import 'rc-slider/assets/index.css'
 import { useEffect, useState } from 'react'
 
 import { Footer } from '@/components/Footer'
 import { Nav } from '@/components/Nav'
 import { useStats } from '@/components/Stats'
-import { Container, Layout, Title } from '@/components/atoms'
+import { Card, Container, Layout, Title } from '@/components/atoms'
 
 import data from '../data.json'
 
@@ -32,17 +33,26 @@ export default function Estimates() {
     }
   }, [LiveGasPrice, didMoveSlider])
 
-  const sliderProps = {
+  const sliderProps: SliderProps = {
     min: 0,
     max: 100,
     step: 1,
-    handleStyle: [
-      {
-        width: '20px',
-        height: '20px',
-        marginTop: '-8px',
-      },
-    ],
+    handleStyle: {
+      width: '20px',
+      height: '20px',
+      marginTop: '-8px',
+      borderColor: lightTheme.colors.blue,
+    },
+    trackStyle: { backgroundColor: lightTheme.colors.blue },
+    railStyle: { backgroundColor: lightTheme.colors.blueLight },
+    dotStyle: {
+      backgroundColor: lightTheme.colors.background,
+      borderColor: lightTheme.colors.blueLight,
+    },
+    activeDotStyle: {
+      backgroundColor: lightTheme.colors.background,
+      borderColor: lightTheme.colors.blue,
+    },
     marks: { 0: '0', 25: '25', 50: '50', 75: '75', 100: '100' },
   }
 
@@ -67,7 +77,7 @@ export default function Estimates() {
 
         <main>
           <Container>
-            <Title>
+            <Title style={{ maxWidth: '38rem', marginBottom: '3rem' }}>
               Transaction fee estimates for popular Ethereum protocols
             </Title>
 
@@ -85,7 +95,7 @@ export default function Estimates() {
             <div className="project-grid">
               {data.map((project) => {
                 return (
-                  <div className={'project'} key={stringToClass(project.name)}>
+                  <Card key={stringToClass(project.name)}>
                     <h2 className="project__name">
                       {project.link ? (
                         <Link href={project.link} legacyBehavior>
@@ -137,7 +147,7 @@ export default function Estimates() {
                         )
                       })}
                     </div>
-                  </div>
+                  </Card>
                 )
               })}
             </div>
@@ -192,13 +202,6 @@ export default function Estimates() {
         @media screen and (min-width: 40em) {
           .project-grid {
             grid-template-columns: repeat(2, 1fr);
-            gap: 2rem;
-          }
-        }
-
-        @media screen and (min-width: 60em) {
-          .project-grid {
-            grid-template-columns: repeat(3, 1fr);
           }
         }
       `}</style>

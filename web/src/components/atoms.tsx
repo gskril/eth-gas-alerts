@@ -9,7 +9,7 @@ export const Layout = styled.div(
     align-items: center;
     flex-direction: column;
     justify-content: space-between;
-    padding: ${theme.space['6']} ${theme.space['4']};
+    padding: ${theme.space['6']};
     gap: ${theme.space['18']};
 
     ${mq.sm.min(css`
@@ -18,49 +18,29 @@ export const Layout = styled.div(
   `
 )
 
-export const Columns = styled.div(
-  ({ theme }) => css`
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: ${theme.space['6']};
-  `
-)
-
-export const Link = styled.a(
-  ({ theme }) => css`
-    color: ${theme.colors.bluePrimary};
-    text-decoration: underline;
-
-    @media (hover: hover) {
-      &:hover {
-        text-decoration: none;
-      }
-    }
-  `
-)
-
 export const Container = styled.div`
   margin-left: auto;
   margin-right: auto;
-  max-width: 65rem;
+  max-width: 55rem;
 `
 
 export const Card = styled(ThorinCard)(
   ({ theme }) => css`
-    align-items: center;
+    width: 100%;
+    line-height: 1.4;
     max-width: ${theme.space['112']};
     margin: 0 auto;
   `
 )
 
 export const Title = styled(Heading)`
-  font-size: 2rem;
+  font-size: 1.75rem;
   font-weight: 800;
-  margin-bottom: 3rem;
   line-height: 1.2;
-  max-width: 38rem;
+
+  ${mq.xs.min(css`
+    font-size: 2rem;
+  `)}
 
   ${mq.sm.min(css`
     font-size: 2.5rem;

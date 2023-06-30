@@ -13,3 +13,7 @@ main {
     display: none !important;
   }
 }
+
+.rc-slider-handle-dragging.rc-slider-handle-dragging.rc-slider-handle-dragging {
+  box-shadow: 0 0 0 3px rgb(82, 152, 255) !important;
+}

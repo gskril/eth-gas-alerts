@@ -1,23 +1,10 @@
-import { Heading, mq } from '@ensdomains/thorin'
 import Head from 'next/head'
-import styled, { css } from 'styled-components'
 
 import { Footer } from '@/components/Footer'
 import { Nav } from '@/components/Nav'
 import Scale from '@/components/Scale'
 import { useStats } from '@/components/Stats'
-import { Container, Layout } from '@/components/atoms'
-
-const Title = styled(Heading)`
-  font-size: 2rem;
-  font-weight: 800;
-  margin-bottom: 1.5rem;
-  text-align: center;
-
-  ${mq.sm.min(css`
-    font-size: 2.5rem;
-  `)}
-`
+import { Container, Layout, Title } from '@/components/atoms'
 
 export default function Home() {
   const gweiString = useStats().gas.now
@@ -41,7 +28,9 @@ export default function Home() {
 
         <main>
           <Container>
-            <Title>{useStats().gas.message}</Title>
+            <Title align="center" style={{ marginBottom: '1.5rem' }}>
+              {useStats().gas.message}
+            </Title>
             <Scale />
           </Container>
         </main>

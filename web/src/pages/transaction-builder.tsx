@@ -36,8 +36,6 @@ export default function TransactionBuilder() {
           <Title
             style={{
               textAlign: 'center',
-              marginLeft: 'auto',
-              marginRight: 'auto',
               marginBottom: '1rem',
             }}
           >
