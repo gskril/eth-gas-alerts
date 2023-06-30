@@ -4,6 +4,7 @@ import Slider from 'rc-slider'
 import 'rc-slider/assets/index.css'
 import { useEffect, useState } from 'react'
 
+import { Footer } from '@/components/Footer'
 import { Nav } from '@/components/Nav'
 import { useStats } from '@/components/Stats'
 import { Container, Layout, Title } from '@/components/atoms'
@@ -143,8 +144,7 @@ export default function Estimates() {
           </Container>
         </main>
 
-        {/* Footer placeholder */}
-        <div />
+        <Footer />
       </Layout>
 
       <style jsx>{`

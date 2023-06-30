@@ -6,14 +6,9 @@ import { GithubIcon, TwitterIcon } from '../assets/icons'
 const Wrapper = styled.div`
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   gap: 1.5rem;
-
-  ${mq.sm.max(css`
-    gap: 0.75rem;
-    flex-direction: column-reverse;
-  `)}
 `
 
 const Links = styled.div`
@@ -39,19 +34,10 @@ export function Footer() {
   return (
     <Wrapper>
       <Links>
-        <Link href="https://gregskril.com/" target="_blank">
-          Link 1
-        </Link>
-        <Link href="https://gregskril.com/" target="_blank">
-          Link 2
-        </Link>
-      </Links>
-
-      <Links>
-        <Link href="https://twitter.com/gregskril" target="_blank">
+        <Link href="https://twitter.com/ethgasalerts" target="_blank">
           <TwitterIcon />
         </Link>
-        <Link href="https://github.com/gskril/web3-starter" target="_blank">
+        <Link href="https://github.com/gskril/eth-gas-alerts" target="_blank">
           <GithubIcon />
         </Link>
       </Links>

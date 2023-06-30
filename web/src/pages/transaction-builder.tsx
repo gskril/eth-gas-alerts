@@ -2,6 +2,7 @@ import { Input, Typography } from '@ensdomains/thorin'
 import Head from 'next/head'
 import { useState } from 'react'
 
+import { Footer } from '@/components/Footer'
 import { Nav } from '@/components/Nav'
 import { useStats } from '@/components/Stats'
 import { Card, Container, Layout, Title } from '@/components/atoms'
@@ -68,8 +69,7 @@ export default function TransactionBuilder() {
           )}
         </Container>
 
-        {/* Footer placeholder */}
-        <div />
+        <Footer />
       </Layout>
     </>
   )

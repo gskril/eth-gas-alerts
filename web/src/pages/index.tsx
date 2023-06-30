@@ -2,6 +2,7 @@ import { Heading, mq } from '@ensdomains/thorin'
 import Head from 'next/head'
 import styled, { css } from 'styled-components'
 
+import { Footer } from '@/components/Footer'
 import { Nav } from '@/components/Nav'
 import Scale from '@/components/Scale'
 import { useStats } from '@/components/Stats'
@@ -45,8 +46,7 @@ export default function Home() {
           </Container>
         </main>
 
-        {/* Footer placeholder */}
-        <div />
+        <Footer />
       </Layout>
     </>
   )
