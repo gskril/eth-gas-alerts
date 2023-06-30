@@ -10,6 +10,73 @@
             "gas": 21000
           }
         ]
+      },
+      {
+        "name": "Optimized NFT mint",
+        "description": "For example, Azuki",
+        "contractFunctions": [
+          {
+            "name": "mint",
+            "gas": 75000
+          }
+        ]
+      },
+      {
+        "name": "Average NFT mint",
+        "contractFunctions": [
+          {
+            "name": "mint",
+            "gas": 150000
+          }
+        ]
+      },
+      {
+        "name": "Expensive NFT mint",
+        "contractFunctions": [
+          {
+            "name": "mint",
+            "gas": 250000
+          }
+        ]
+      },
+      {
+        "name": "Optimized NFT transfer",
+        "description": "ERC-1155",
+        "contractFunctions": [
+          {
+            "name": "transferFrom",
+            "gas": 36705
+          }
+        ]
+      },
+      {
+        "name": "Average NFT transfer",
+        "description": "ERC-721",
+        "contractFunctions": [
+          {
+            "name": "transferFrom",
+            "gas": 75000
+          }
+        ]
+      },
+      {
+        "name": "Expensive NFT transfer",
+        "description": "ERC-721",
+        "contractFunctions": [
+          {
+            "name": "transferFrom",
+            "gas": 108767
+          }
+        ]
+      },
+      {
+        "name": "Revoke token access",
+        "contractFunctions": [
+          {
+            "name": "setApprovalForAll",
+            "gas": 29657
+          }
+        ]
       }
     ]
   },
@@ -19,7 +86,7 @@
     "contractAddress": "0x253553366Da8546fC250F225fe3d25d0C782303b",
     "actions": [
       {
-        "name": "Register and wrap .eth name",
+        "name": "Register and set primary name",
         "contractFunctions": [
           {
             "name": "commit",
@@ -27,29 +94,29 @@
           },
           {
             "name": "register",
-            "gas": 280000
+            "gas": 370000
           }
         ]
       },
       {
-        "name": "Register .eth name (old)",
+        "name": "Register .eth name",
         "contractFunctions": [
           {
             "name": "commit",
-            "gas": 46267
+            "gas": 44206
           },
           {
-            "name": "registerWithConfig",
-            "gas": 280000
+            "name": "register",
+            "gas": 270000
           }
         ]
       },
       {
-        "name": "Renew .eth name",
+        "name": "Set primary name",
         "contractFunctions": [
           {
-            "name": "renew",
-            "gas": 90000
+            "name": "setName",
+            "gas": 114140
           }
         ]
       },
@@ -66,7 +133,7 @@
         "name": "Import DNS name",
         "contractFunctions": [
           {
-            "name": "n/a",
+            "name": "proveAndClaim",
             "gas": 3800000
           }
         ]
@@ -76,16 +143,16 @@
         "contractFunctions": [
           {
             "name": "setText",
-            "gas": 60000
+            "gas": 55000
           }
         ]
       },
       {
-        "name": "Transfer",
+        "name": "Renew name",
         "contractFunctions": [
           {
-            "name": "transferFrom",
-            "gas": 46015
+            "name": "renew",
+            "gas": 92000
           }
         ]
       },
@@ -118,7 +185,7 @@
         "name": "Add owner",
         "contractFunctions": [
           {
-            "name": "execTransaction",
+            "name": "addOwnerWithThreshold",
             "gas": 83118
           }
         ]
@@ -127,70 +194,8 @@
         "name": "Remove owner",
         "contractFunctions": [
           {
-            "name": "execTransaction",
-            "gas": 65810
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "name": "Generic NFTs",
-    "actions": [
-      {
-        "name": "Optimized mint",
-        "description": "For example, Azuki",
-        "contractFunctions": [
-          {
-            "name": "mint",
-            "gas": 75000
-          }
-        ]
-      },
-      {
-        "name": "Average mint",
-        "contractFunctions": [
-          {
-            "name": "mint",
-            "gas": 150000
-          }
-        ]
-      },
-      {
-        "name": "Expensive mint",
-        "contractFunctions": [
-          {
-            "name": "mint",
-            "gas": 250000
-          }
-        ]
-      },
-      {
-        "name": "Cheap Transfer",
-        "description": "ERC-11155",
-        "contractFunctions": [
-          {
-            "name": "transferFrom",
-            "gas": 39705
-          }
-        ]
-      },
-      {
-        "name": "Average Transfer",
-        "description": "ERC-721",
-        "contractFunctions": [
-          {
-            "name": "transferFrom",
-            "gas": 75000
-          }
-        ]
-      },
-      {
-        "name": "Revoke Access",
-        "contractFunctions": [
-          {
-            "name": "setApprovalForAll",
-            "gas": 29657
+            "name": "removeOwner",
+            "gas": 70000
           }
         ]
       }
