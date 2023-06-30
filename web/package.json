@@ -10,15 +10,21 @@
     "start:backend": "cd backend && yarn start"
   },
   "dependencies": {
-    "eslint-plugin-react-hooks": "^4.3.0",
-    "next": "12.1.0",
-    "rc-slider": "^10.0.0-alpha.5",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
-    "swr": "^1.2.2"
+    "next": "^13.4.7",
+    "rc-slider": "^10.2.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "swr": "^2.2.0"
   },
   "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^4.1.1",
+    "@types/node": "^20.3.2",
+    "@types/react": "^18.2.14",
+    "@types/react-dom": "^18.2.6",
     "eslint": "8.11.0",
-    "eslint-config-next": "12.1.0"
+    "eslint-config-next": "12.1.0",
+    "eslint-config-prettier": "^8.8.0",
+    "prettier": "^2.8.8",
+    "typescript": "^5.1.6"
   }
 }
