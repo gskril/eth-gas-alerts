@@ -16,10 +16,23 @@
 	{
 		"name": "Ethereum Name Service",
 		"link": "https://ens.domains",
-		"contractAddress": "0x283af0b28c62c092c9727f1ee09c02ca627eb7f5",
+		"contractAddress": "0x253553366Da8546fC250F225fe3d25d0C782303b",
 		"actions": [
 			{
-				"name": "Register .eth name",
+				"name": "Register and wrap .eth name",
+				"contractFunctions": [
+					{
+						"name": "commit",
+						"gas": 44206
+					},
+					{
+						"name": "register",
+						"gas": 280000
+					}
+				]
+			},
+			{
+				"name": "Register .eth name (old)",
 				"contractFunctions": [
 					{
 						"name": "commit",
@@ -36,12 +49,12 @@
 				"contractFunctions": [
 					{
 						"name": "renew",
-						"gas": 111000
+						"gas": 90000
 					}
 				]
 			},
 			{
-				"name": "Register subdomain",
+				"name": "Create subdomain",
 				"contractFunctions": [
 					{
 						"name": "setSubnodeRecord",
@@ -73,6 +86,14 @@
 					{
 						"name": "transferFrom",
 						"gas": 46015
+					}
+				]
+			}, {
+				"name": "Wrap",
+				"contractFunctions": [
+					{
+						"name": "wrap",
+						"gas": 97500
 					}
 				]
 			}
