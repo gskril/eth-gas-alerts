@@ -139,8 +139,7 @@ export function Stats() {
         .analytics {
           display: flex;
           gap: 1rem;
-          position: absolute;
-          transform: translateY(-2rem);
+          width: fit-content;
           background-color: var(--color-highlight);
           padding: 0.25rem 0.75rem;
           border-radius: 0.375rem;

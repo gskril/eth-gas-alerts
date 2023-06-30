@@ -29,11 +29,16 @@ export default function Scale() {
           </div>
         </div>
       </div>
-      <p className="prediction">
-        {gasHourlyForecast + 2 < gasLive
-          ? `Expected to drop to ${gasHourlyForecast} gwei in the next hour`
-          : 'Not expected to go much lower in the next hour'}
-      </p>
+      {gasHourlyForecast + 2 < gasLive ? (
+        <p className="prediction">
+          Expected to drop to <strong>{gasHourlyForecast} gwei</strong> in the
+          next hour
+        </p>
+      ) : (
+        <p className="prediction">
+          Not expected to go much lower in the next hour
+        </p>
+      )}
 
       <style jsx>
         {`
@@ -75,10 +80,8 @@ export default function Scale() {
             bottom: calc(var(--scale-height) * -1);
           }
 
-          @media screen and (min-width: 40em) {
-            .prediction {
-              text-align: center;
-            }
+          .prediction {
+            text-align: center;
           }
 
           @media screen and (max-width: 40em) {

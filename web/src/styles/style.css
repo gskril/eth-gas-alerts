@@ -1,0 +1,15 @@
+:root {
+  --color-highlight: #e4f2ff;
+  --text-color-light: #838383;
+  --text-color-dark: #222222;
+}
+
+main {
+  width: 100%;
+}
+
+@media screen and (max-width: 40em) {
+  .hide-mobile {
+    display: none !important;
+  }
+}
