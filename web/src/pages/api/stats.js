@@ -22,14 +22,26 @@ export default async function handler(req, res) {
     gas1h = data.forecast['1 hour']
     eth = data.ethPrice
 
-    if (gas < 30) {
-      message = 'Amazing time to make transactions!'
-    } else if (gas < 50) {
+    // check if gas is expected to drop within 1 hour
+    const isGasLoweringIn1h = gas - 5 > gas1h
+    const isGasLoweringALotIn1h = gas - 10 > gas1h
+
+    if (gas < 30 && !isGasLoweringIn1h) {
+      message = 'Great time to make transactions!'
+    } else if (gas < 50 && !isGasLoweringIn1h) {
       message = 'Good time to make transactions!'
     } else if (gas <= 70) {
-      message = 'Decent time to make transactions.'
+      if (isGasLoweringALotIn1h) {
+        message = 'Wait a bit, gas is expected to drop soon.'
+      } else {
+        message = 'Decent time to make transactions.'
+      }
     } else if (gas > 70) {
-      message = 'Gas is pretty high, consider waiting to save money.'
+      if (isGasLoweringALotIn1h) {
+        message = 'Gas is pretty high, consider waiting to save money.'
+      } else {
+        message = 'Gas is pretty high but not expected to drop soon :/'
+      }
     }
 
     res.status(200)
