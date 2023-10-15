@@ -4,17 +4,15 @@ import { useState } from 'react'
 
 import { Footer } from '@/components/Footer'
 import { Nav } from '@/components/Nav'
-import { useStats } from '@/components/Stats'
 import { Card, Container, Layout, Title } from '@/components/atoms'
 import { useIsMounted } from '@/hooks/useIsMounted'
 
 export default function TransactionBuilder() {
-  const ethNum = useStats().eth.price
-
+  const [ethPrice, setEthPrice] = useState(0)
   const [gasAmount, setGasAmount] = useState(0)
   const [gasPrice, setGasPrice] = useState(0)
 
-  const feePriceNum = gasAmount * gasPrice * 0.000000001 * ethNum
+  const feePriceNum = gasAmount * gasPrice * 0.000000001 * ethPrice
   const feePrice = parseFloat(feePriceNum.toString()).toFixed(2)
 
   const isMounted = useIsMounted()
@@ -60,6 +58,15 @@ export default function TransactionBuilder() {
                 suffix="gwei"
                 // @ts-ignore
                 onChange={(e) => setGasPrice(e.target.value)}
+              />
+
+              <Input
+                label="ETH Price"
+                itemType="number"
+                placeholder="2000"
+                suffix="USD"
+                // @ts-ignore
+                onChange={(e) => setEthPrice(e.target.value)}
               />
 
               <Typography className="output">Fee: ${feePrice}</Typography>
