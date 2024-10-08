@@ -28,7 +28,7 @@ export default function Home() {
 
         <main>
           <Container>
-            <Title align="center" style={{ marginBottom: '1.5rem' }}>
+            <Title style={{ marginBottom: '1.5rem', textAlign: 'center' }}>
               {useStats().gas.message}
             </Title>
             <Scale />

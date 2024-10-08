@@ -13,7 +13,7 @@ export default async function handler(
 
   const client = createPublicClient({
     chain: mainnet,
-    transport: http(undefined, { batch: true }),
+    transport: http(process.env.ETH_RPC, { batch: true }),
   })
 
   try {
