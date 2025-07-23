@@ -18,7 +18,7 @@ export default async function handler(
 
   try {
     const [_gasPrice, _ethPrice] = await Promise.all([
-      (await client.getGasPrice().then((res) => Number(res) / 1e9)).toFixed(0),
+      (await client.getGasPrice().then((res) => Number(res) / 1e9)).toFixed(2),
       client
         .readContract({
           address: '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419', // Chainlink Price Feed
