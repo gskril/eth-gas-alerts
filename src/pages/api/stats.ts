@@ -14,15 +14,15 @@ export async function GET(context: APIContext) {
     const gasGwei = Math.round(formatGasPrice(gasPriceWei) * 100) / 100;
     const ethUsd = Math.round(formatEthPrice(ethPriceRaw) * 100) / 100;
 
-    return Response.json({
-      gas: {
-        now: gasGwei,
+    return Response.json(
+      {
+        gas: { now: gasGwei },
+        eth: { price: ethUsd },
       },
-      eth: {
-        price: ethUsd,
-      },
-      update: new Date(),
-    });
+      {
+        headers: { 'Cache-Control': 'public, s-maxage=15, max-age=15' },
+      }
+    );
   } catch (error) {
     return Response.json({ error: 'Failed to fetch data' }, { status: 500 });
   }

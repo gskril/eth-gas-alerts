@@ -1,42 +1,9 @@
-import { useEffect, useState } from 'react';
-
-interface Stats {
-  gas: { now: number | string; message: string };
-  eth: { price: number | string };
-}
-
-const defaultStats: Stats = {
-  gas: { now: '---', message: 'Loading...' },
-  eth: { price: '---' },
-};
+import { useStats } from '@/lib/hooks';
 
 export default function StatsBar() {
-  const [stats, setStats] = useState<Stats>(defaultStats);
-  const [fresh, setFresh] = useState(false);
+  const { data: stats } = useStats();
 
-  useEffect(() => {
-    const fetchStats = () => {
-      fetch('/api/stats')
-        .then((res) => res.json())
-        .then((data) => {
-          setStats(data);
-          setFresh(true);
-          setTimeout(() => setFresh(false), 1000);
-        })
-        .catch(() =>
-          setStats({
-            gas: { now: 'Err', message: 'Error fetching data.' },
-            eth: { price: 'Err' },
-          })
-        );
-    };
-
-    fetchStats();
-    const interval = setInterval(fetchStats, 30_000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const gasNum = typeof stats.gas.now === 'number' ? stats.gas.now : 0;
+  const gasNum = typeof stats?.gas.now === 'number' ? stats.gas.now : 0;
   const gasColor =
     gasNum < 30 ? 'text-gas-low' : gasNum < 50 ? 'text-gas-mid' : 'text-gas-high';
 
@@ -47,8 +14,8 @@ export default function StatsBar() {
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gas-low opacity-75" />
           <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-gas-low" />
         </span>
-        <span className={`font-medium tabular-nums transition-colors ${gasColor} ${fresh ? 'opacity-100' : ''}`}>
-          {stats.gas.now}
+        <span className={`font-medium tabular-nums transition-colors ${gasColor}`}>
+          {stats?.gas.now ?? '---'}
         </span>
         <span className="text-text-muted">Gwei</span>
       </div>
@@ -60,7 +27,7 @@ export default function StatsBar() {
           <path d="M5.05095 15.9966V11.978L0 9.07764L5.05095 15.9963V15.9966Z" fill="currentColor" opacity="0.6" />
         </svg>
         <span className="font-medium tabular-nums text-text-primary">
-          ${typeof stats.eth.price === 'number' ? stats.eth.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : stats.eth.price}
+          ${typeof stats?.eth.price === 'number' ? stats.eth.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '---'}
         </span>
       </div>
     </div>

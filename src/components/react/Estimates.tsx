@@ -1,31 +1,22 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { protocols } from '@/data/protocols';
 import { calculateCostUsd } from '@/lib/constants';
+import { useStats } from '@/lib/hooks';
 
 export default function Estimates() {
-  const [ethPrice, setEthPrice] = useState(0);
-  const [liveGasPrice, setLiveGasPrice] = useState(0);
+  const { data: stats } = useStats();
   const [didMoveSlider, setDidMoveSlider] = useState(false);
   const [sliderValue, setSliderValue] = useState(0);
   const [gasPrice, setGasPrice] = useState(0);
+  const ethPrice = stats?.eth.price ?? 0;
 
   useEffect(() => {
-    fetch('/api/stats')
-      .then((res) => res.json())
-      .then((data) => {
-        setEthPrice(data.eth.price);
-        setLiveGasPrice(data.gas.now);
-      })
-      .catch(() => {});
-  }, []);
-
-  useEffect(() => {
-    if (typeof liveGasPrice === 'number' && !didMoveSlider) {
-      setGasPrice(liveGasPrice);
-      setSliderValue(liveGasPrice);
+    if (typeof stats?.gas.now === 'number' && !didMoveSlider) {
+      setGasPrice(stats.gas.now);
+      setSliderValue(stats.gas.now);
     }
-  }, [liveGasPrice, didMoveSlider]);
+  }, [stats?.gas.now, didMoveSlider]);
 
   const gasPriceEstimate = (gasAmount: number) => {
     const cost = calculateCostUsd(gasAmount, gasPrice, ethPrice);
