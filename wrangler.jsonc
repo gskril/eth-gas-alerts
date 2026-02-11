@@ -5,7 +5,7 @@
     "binding": "ASSETS",
     "directory": "./dist"
   },
-  "compatibility_date": "2025-03-25",
+  "compatibility_date": "2026-02-11",
   "compatibility_flags": [
     "nodejs_compat"
   ],
