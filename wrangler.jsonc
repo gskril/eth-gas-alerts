@@ -1,5 +1,6 @@
 {
   "name": "eth-gas-alerts",
+  "pages_build_output_dir": "./dist",
   "compatibility_date": "2025-03-25",
   "d1_databases": [
     {
