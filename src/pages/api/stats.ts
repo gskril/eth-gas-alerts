@@ -1,7 +1,6 @@
 import type { APIContext } from 'astro';
 
 import { getGasPriceWei, getEthPriceRaw, formatGasPrice, formatEthPrice } from '@/lib/ethereum';
-import { getGasMessage } from '@/lib/constants';
 
 export async function GET(context: APIContext) {
   const rpcUrl = context.locals.runtime?.env?.ETH_RPC || undefined;
@@ -18,7 +17,6 @@ export async function GET(context: APIContext) {
     return Response.json({
       gas: {
         now: gasGwei,
-        message: getGasMessage(gasGwei),
       },
       eth: {
         price: ethUsd,

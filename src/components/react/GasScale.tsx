@@ -52,10 +52,6 @@ export default function GasScale() {
         <span className="block text-text-secondary text-lg mt-1 font-mono">Gwei</span>
       </div>
 
-      {/* Message */}
-      <p className="text-center text-text-secondary text-lg mb-10">
-        {stats?.gas.message || 'Loading...'}
-      </p>
 
       {/* Scale */}
       <div className="relative mb-14">
