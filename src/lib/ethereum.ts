@@ -6,7 +6,7 @@ import { CHAINLINK_ETH_USD } from './constants';
 export function getClient(rpcUrl?: string) {
   return createPublicClient({
     chain: mainnet,
-    transport: http(rpcUrl || undefined, { batch: true }),
+    transport: http(rpcUrl || 'https://ethereum-rpc.publicnode.com', { batch: true }),
   });
 }
 
