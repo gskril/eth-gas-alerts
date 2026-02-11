@@ -40,7 +40,7 @@ export function createExports(manifest: SSRManifest) {
         ]);
 
         await env.DB.prepare(
-          'INSERT INTO gas_prices (block_number, timestamp, gas_price, block_gas_limit) VALUES (?, ?, ?, ?)'
+          'INSERT OR IGNORE INTO gas_prices (block_number, timestamp, gas_price, block_gas_limit) VALUES (?, ?, ?, ?)'
         )
           .bind(
             Number(block.number),

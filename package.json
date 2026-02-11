@@ -8,7 +8,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "seed-history": "bun run scripts/seed-history.ts"
+    "seed-history": "bun --env-file=.dev.vars run scripts/seed-history.ts",
+    "seed-history:prod": "SEED_REMOTE=1 bun --env-file=.dev.vars run scripts/seed-history.ts"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.5.0",

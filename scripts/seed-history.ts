@@ -3,8 +3,8 @@ import { mainnet } from 'viem/chains';
 import { execFileSync } from 'child_process';
 import { writeFileSync, unlinkSync } from 'fs';
 
-const BLOCK_COUNT = 200;
-const BLOCK_SKIP = 10;
+const BLOCK_COUNT = 1000;
+const BLOCK_SKIP = 5;
 
 async function main() {
   const rpcUrl = process.env.ETH_RPC || 'https://ethereum-rpc.publicnode.com';
@@ -14,8 +14,9 @@ async function main() {
     transport: http(rpcUrl, { batch: true }),
   });
 
-  const latestBlock = await client.getBlock();
-  const latestNumber = latestBlock.number;
+  // const latestBlock = await client.getBlock();
+  // const latestNumber = latestBlock.number;
+  const latestNumber = BigInt(20000000);
 
   console.log(`Latest block: ${latestNumber}`);
   console.log(`Fetching ${BLOCK_COUNT} blocks (every ${BLOCK_SKIP})...`);
@@ -45,25 +46,42 @@ async function main() {
       return `(${b.number}, ${b.timestamp}, '${gasPrice}', '${b.gasLimit.toString()}')`;
     });
 
-  const sql = [
-    `CREATE TABLE IF NOT EXISTS gas_prices (block_number INTEGER NOT NULL, timestamp INTEGER NOT NULL, gas_price TEXT NOT NULL, block_gas_limit TEXT NOT NULL);`,
+  const CHUNK_SIZE = 1000;
+  const tmpFile = '.seed-history.sql';
+
+  const header = [
+    `CREATE TABLE IF NOT EXISTS gas_prices (block_number INTEGER PRIMARY KEY, timestamp INTEGER NOT NULL, gas_price TEXT NOT NULL, block_gas_limit TEXT NOT NULL);`,
     `CREATE INDEX IF NOT EXISTS idx_timestamp ON gas_prices(timestamp DESC);`,
-    `INSERT OR REPLACE INTO gas_prices (block_number, timestamp, gas_price, block_gas_limit) VALUES\n${rows.join(',\n')};`,
   ].join('\n');
 
-  const tmpFile = '.seed-history.sql';
-  writeFileSync(tmpFile, sql);
-
-  console.log(`Inserting ${rows.length} records into local D1...`);
-
-  try {
-    execFileSync('bunx', ['wrangler', 'd1', 'execute', 'eth-gas-alerts', '--local', `--file=${tmpFile}`], {
-      stdio: 'inherit',
-    });
-    console.log('Done! Restart the dev server to see history data.');
-  } finally {
-    unlinkSync(tmpFile);
+  const chunks = [];
+  for (let i = 0; i < rows.length; i += CHUNK_SIZE) {
+    chunks.push(rows.slice(i, i + CHUNK_SIZE));
   }
+
+  console.log(`Inserting ${rows.length} records in ${chunks.length} batch(es)...`);
+
+  for (let i = 0; i < chunks.length; i++) {
+    const sql = i === 0
+      ? `${header}\nINSERT OR REPLACE INTO gas_prices (block_number, timestamp, gas_price, block_gas_limit) VALUES\n${chunks[i].join(',\n')};`
+      : `INSERT OR REPLACE INTO gas_prices (block_number, timestamp, gas_price, block_gas_limit) VALUES\n${chunks[i].join(',\n')};`;
+
+    writeFileSync(tmpFile, sql);
+
+    try {
+      const remote = process.env.SEED_REMOTE === '1';
+      execFileSync('bunx', ['wrangler', 'd1', 'execute', 'eth-gas-alerts', ...(remote ? [`--remote`] : ['--local']), `--file=${tmpFile}`], {
+        stdio: 'inherit',
+      });
+      console.log(`  batch ${i + 1}/${chunks.length} done (${chunks[i].length} rows)`);
+    } catch (err) {
+      console.error(`  batch ${i + 1} failed:`, err);
+      throw err;
+    }
+  }
+
+  unlinkSync(tmpFile);
+  console.log('Done! Restart the dev server to see history data.');
 }
 
 main().catch(console.error);

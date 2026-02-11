@@ -7,7 +7,7 @@ interface DataPoint {
   block_gas_limit: number;
 }
 
-type TimeRange = '1h' | '6h' | '24h' | '7d' | '30d';
+type TimeRange = '1h' | '6h' | '24h' | '7d' | '30d' | '6mo';
 
 const RANGE_HOURS: Record<TimeRange, number> = {
   '1h': 1,
@@ -15,13 +15,14 @@ const RANGE_HOURS: Record<TimeRange, number> = {
   '24h': 24,
   '7d': 168,
   '30d': 720,
+  '6mo': 4320,
 };
 
 function getVar(name: string) {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }
 
-const ALL_RANGES: TimeRange[] = ['1h', '6h', '24h', '7d', '30d'];
+const ALL_RANGES: TimeRange[] = ['1h', '6h', '24h', '7d', '30d', '6mo'];
 
 function getAvailableRanges(oldestTimestamp: number | null): TimeRange[] {
   if (!oldestTimestamp) return ALL_RANGES;

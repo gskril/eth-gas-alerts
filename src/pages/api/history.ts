@@ -1,7 +1,23 @@
 import type { APIContext } from 'astro';
 import { formatUnits } from 'viem';
 
-const VALID_HOURS = new Set([1, 6, 24, 168, 720]);
+const VALID_HOURS = new Set([1, 6, 24, 168, 720, 4320]);
+
+// Returns the time-bucket size in seconds for a given range.
+// Targets ~200-400 data points per range to keep payloads light.
+//  1h  → raw          (~60 pts)
+//  6h  → raw          (~360 pts)
+//  24h → 5 min        (~288 pts)
+//  7d  → 30 min       (~336 pts)
+//  30d → 2 hours      (~360 pts)
+//  6mo → 12 hours     (~360 pts)
+function bucketSize(hours: number): number | null {
+  if (hours <= 6) return null; // no bucketing
+  if (hours <= 24) return 300;
+  if (hours <= 168) return 1800;
+  if (hours <= 720) return 7200;
+  return 43200;
+}
 
 export async function GET(context: APIContext) {
   const db = context.locals.runtime?.env?.DB;
@@ -18,8 +34,9 @@ export async function GET(context: APIContext) {
 
   try {
     let result;
+    const bucket = bucketSize(hours);
 
-    if (hours <= 24) {
+    if (bucket === null) {
       result = await db
         .prepare(
           'SELECT timestamp, gas_price, block_gas_limit FROM gas_prices WHERE timestamp > ? ORDER BY timestamp ASC'
@@ -27,7 +44,6 @@ export async function GET(context: APIContext) {
         .bind(since)
         .all();
     } else {
-      const bucketSize = hours <= 168 ? 300 : 1800;
       result = await db
         .prepare(
           `SELECT
@@ -39,7 +55,7 @@ export async function GET(context: APIContext) {
           GROUP BY timestamp / ?
           ORDER BY timestamp ASC`
         )
-        .bind(bucketSize, bucketSize, since, bucketSize)
+        .bind(bucket, bucket, since, bucket)
         .all();
     }
 
