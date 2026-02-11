@@ -2,7 +2,6 @@ import { formatEther, parseGwei } from 'viem';
 
 export const CHAINLINK_ETH_USD = '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419' as const;
 
-export const GAS_SCALE_MAX = 20;
 
 export function getGasMessage(gwei: number): string {
   if (gwei < 3) return 'Great time to make transactions!';

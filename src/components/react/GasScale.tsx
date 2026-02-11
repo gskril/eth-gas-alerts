@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react';
 
-import { GAS_SCALE_MAX } from '@/lib/constants';
+const SCALE_TIERS = [
+  { max: 10, labels: [0, 2, 4, 6, 8, 10] },
+  { max: 50, labels: [0, 10, 20, 30, 40, 50] },
+  { max: 150, labels: [0, 30, 60, 90, 120, 150] },
+];
+
+function getScaleTier(gwei: number) {
+  return SCALE_TIERS.find((t) => gwei < t.max) || SCALE_TIERS[SCALE_TIERS.length - 1];
+}
 
 interface Stats {
   gas: { now: number; message: string };
@@ -24,9 +32,9 @@ export default function GasScale() {
   }, []);
 
   const gasNow = typeof stats?.gas.now === 'number' ? stats.gas.now : 0;
-  const scalePercentage = (gasNow / GAS_SCALE_MAX) * 100;
+  const tier = getScaleTier(gasNow);
+  const scalePercentage = (gasNow / tier.max) * 100;
   const position = Math.min(scalePercentage, 98) || 50;
-  const scale = [0, 5, 10, 15, 20];
 
   const gasColor =
     gasNow < 3 ? '#34d399' : gasNow < 8 ? '#fbbf24' : '#f87171';
@@ -85,7 +93,7 @@ export default function GasScale() {
             />
             {/* Needle line */}
             <div
-              className="relative w-[2px] h-6 rounded-full"
+              className="relative w-[2px] h-4 rounded-full"
               style={{
                 backgroundColor: gasColor,
                 boxShadow: `0 0 6px ${gasColor}, 0 0 12px ${gasColor}40`,
@@ -104,7 +112,7 @@ export default function GasScale() {
 
         {/* Labels */}
         <div className="flex w-full justify-between mt-4 font-mono text-xs text-text-muted">
-          {scale.map((gwei) => (
+          {tier.labels.map((gwei) => (
             <span key={gwei}>{gwei}</span>
           ))}
         </div>
