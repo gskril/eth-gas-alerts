@@ -14,9 +14,8 @@ async function main() {
     transport: http(rpcUrl, { batch: true }),
   });
 
-  // const latestBlock = await client.getBlock();
-  // const latestNumber = latestBlock.number;
-  const latestNumber = BigInt(20000000);
+  const latestBlock = await client.getBlock();
+  const latestNumber = latestBlock.number;
 
   console.log(`Latest block: ${latestNumber}`);
   console.log(`Fetching ${BLOCK_COUNT} blocks (every ${BLOCK_SKIP})...`);
