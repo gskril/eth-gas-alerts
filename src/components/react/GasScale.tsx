@@ -42,14 +42,14 @@ export default function GasScale() {
   return (
     <div className="w-full max-w-content mx-auto animate-fade-in-up relative z-10">
       {/* Big gas number */}
-      <div className="text-center mb-2">
+      <div className="flex items-baseline justify-center gap-3 mb-10">
         <span
           className="font-mono text-7xl sm:text-8xl font-medium tabular-nums tracking-tighter transition-colors duration-500"
           style={{ color: gasColor }}
         >
           {stats ? gasNow.toFixed(1) : '--.-'}
         </span>
-        <span className="block text-text-secondary text-lg mt-1 font-mono">Gwei</span>
+        <span className="text-text-secondary text-xl font-mono">Gwei</span>
       </div>
 
 
