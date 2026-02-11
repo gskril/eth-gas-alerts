@@ -17,7 +17,7 @@
     {
       "binding": "DB",
       "database_name": "eth-gas-alerts",
-      "database_id": "REPLACE_WITH_D1_DATABASE_ID"
+      "database_id": "dcbadccc-0a16-4c53-887c-6d1e493d8ab2"
     }
   ],
   "triggers": {
