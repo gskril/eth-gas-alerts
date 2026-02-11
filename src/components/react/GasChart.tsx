@@ -183,7 +183,7 @@ export default function GasChart() {
               <path d="M3 3v18h18" />
               <path d="M7 16l4-4 4 4 6-6" />
             </svg>
-            No history data yet. Data will appear after the cron worker starts recording.
+            No history data yet
           </div>
         ) : (
           <div ref={chartRef} className="[&_.u-wrap]:!bg-transparent" />

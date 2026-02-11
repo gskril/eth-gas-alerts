@@ -7,7 +7,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "seed-history": "bun run scripts/seed-history.ts"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.5.0",
@@ -24,6 +25,7 @@
     "viem": "^2.23.0"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260210.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "typescript": "^5.7.0",

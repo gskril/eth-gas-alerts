@@ -1,4 +1,9 @@
 import type { SSRManifest } from 'astro';
+import type {
+  D1Database,
+  ExecutionContext,
+  ScheduledEvent,
+} from '@cloudflare/workers-types';
 import { App } from 'astro/app';
 import { handle } from '@astrojs/cloudflare/handler';
 import { createPublicClient, formatUnits, http, parseAbi } from 'viem';
@@ -53,6 +58,6 @@ export function createExports(manifest: SSRManifest) {
           )
           .run();
       },
-    } satisfies ExportedHandler<Env>,
+    },
   };
 }
