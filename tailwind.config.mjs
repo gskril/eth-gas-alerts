@@ -29,9 +29,9 @@ export default {
           DEFAULT: 'var(--accent)',
         },
         gas: {
-          low: '#34d399',
-          mid: '#fbbf24',
-          high: '#f87171',
+          low: 'var(--gas-low)',
+          mid: 'var(--gas-mid)',
+          high: 'var(--gas-high)',
         },
       },
       animation: {

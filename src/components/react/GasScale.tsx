@@ -20,15 +20,16 @@ export default function GasScale() {
   const scalePercentage = (gasNow / tier.max) * 100
   const position = Math.min(scalePercentage, 98) || 50
 
-  const gasColor = gasNow < 3 ? '#34d399' : gasNow < 8 ? '#fbbf24' : '#f87171'
+  // Vibrant hex for decorative glow/needle effects (doesn't need contrast)
+  const glowColor = gasNow < 3 ? '#34d399' : gasNow < 8 ? '#fbbf24' : '#f87171'
 
   return (
     <div className="w-full max-w-content mx-auto animate-fade-in-up relative z-10">
       {/* Big gas number */}
       <div className="flex items-baseline justify-center gap-3 mb-10">
         <span
-          className="font-mono text-7xl sm:text-8xl font-medium tabular-nums tracking-tighter transition-colors duration-500"
-          style={{ color: gasColor }}
+          className="font-mono text-7xl sm:text-8xl font-medium tabular-nums tracking-tighter transition-colors duration-500 text-gas-low"
+          style={{ color: gasNow < 3 ? 'var(--gas-low)' : gasNow < 8 ? 'var(--gas-mid)' : 'var(--gas-high)' }}
         >
           {stats ? gasNow.toFixed(2) : '-.--'}
         </span>
@@ -39,7 +40,7 @@ export default function GasScale() {
       <div className="relative mb-14">
         {/* Glow under the bar */}
         <div
-          className="absolute inset-0 top-1 blur-xl opacity-40 rounded-full"
+          className="absolute inset-0 top-px blur-xl opacity-40 rounded-full"
           style={{
             background:
               'linear-gradient(90deg, #34d399 0%, #fbbf24 40%, #f87171 80%)',
@@ -69,14 +70,14 @@ export default function GasScale() {
             {/* Wide ambient glow */}
             <div
               className="absolute w-8 h-8 rounded-full blur-lg opacity-50 -translate-y-1/2 top-1/2"
-              style={{ backgroundColor: gasColor }}
+              style={{ backgroundColor: glowColor }}
             />
             {/* Needle line */}
             <div
               className="relative w-[2px] h-4 rounded-full"
               style={{
-                backgroundColor: gasColor,
-                boxShadow: `0 0 6px ${gasColor}, 0 0 12px ${gasColor}40`,
+                backgroundColor: glowColor,
+                boxShadow: `0 0 6px ${glowColor}, 0 0 12px ${glowColor}40`,
               }}
             />
             {/* Center dot */}
@@ -84,7 +85,7 @@ export default function GasScale() {
               className="absolute top-1/2 -translate-y-1/2 w-[6px] h-[6px] rounded-full"
               style={{
                 backgroundColor: '#fff',
-                boxShadow: `0 0 4px ${gasColor}, 0 0 8px ${gasColor}`,
+                boxShadow: `0 0 4px ${glowColor}, 0 0 8px ${glowColor}`,
               }}
             />
           </div>

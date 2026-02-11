@@ -14,8 +14,11 @@
     --border: #e0e4eb;
     --text-primary: #1a1d26;
     --text-secondary: #5c6070;
-    --text-muted: #9ca0ad;
+    --text-muted: #6b7184;
     --accent: #6366f1;
+    --gas-low: #059669;
+    --gas-mid: #d97706;
+    --gas-high: #dc2626;
     --glow-opacity: 0.03;
     --dot-opacity: 0.03;
     --dot-color: black;
@@ -28,9 +31,12 @@
       --surface-overlay: #1c2333;
       --border: #252d3d;
       --text-primary: #e2e4e9;
-      --text-secondary: #7c8190;
-      --text-muted: #4b5060;
+      --text-secondary: #9399a8;
+      --text-muted: #7d8597;
       --accent: #818cf8;
+      --gas-low: #34d399;
+      --gas-mid: #fbbf24;
+      --gas-high: #f87171;
       --glow-opacity: 0.07;
       --dot-opacity: 0.03;
       --dot-color: white;
