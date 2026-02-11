@@ -1,4 +1,5 @@
 import type { APIContext } from 'astro';
+import { formatUnits } from 'viem';
 
 const VALID_HOURS = new Set([1, 6, 24, 168, 720]);
 
@@ -19,7 +20,6 @@ export async function GET(context: APIContext) {
     let result;
 
     if (hours <= 24) {
-      // Return all data points for 24h or less
       result = await db
         .prepare(
           'SELECT timestamp, gas_price, eth_price, block_gas_limit FROM gas_prices WHERE timestamp > ? ORDER BY timestamp ASC'
@@ -27,15 +27,14 @@ export async function GET(context: APIContext) {
         .bind(since)
         .all();
     } else {
-      // Downsample for longer ranges: group by 5-minute buckets
-      const bucketSize = hours <= 168 ? 300 : 1800; // 5min for 7d, 30min for 30d
+      const bucketSize = hours <= 168 ? 300 : 1800;
       result = await db
         .prepare(
           `SELECT
             (timestamp / ? * ?) as timestamp,
-            CAST(AVG(gas_price) AS INTEGER) as gas_price,
-            CAST(AVG(eth_price) AS INTEGER) as eth_price,
-            CAST(AVG(block_gas_limit) AS INTEGER) as block_gas_limit
+            gas_price,
+            eth_price,
+            block_gas_limit
           FROM gas_prices
           WHERE timestamp > ?
           GROUP BY timestamp / ?
@@ -45,7 +44,14 @@ export async function GET(context: APIContext) {
         .all();
     }
 
-    return Response.json({ data: result.results });
+    const data = result.results.map((row: any) => ({
+      timestamp: row.timestamp,
+      gas_price: Number(formatUnits(BigInt(row.gas_price), 9)),
+      eth_price: Number(formatUnits(BigInt(row.eth_price), 8)),
+      block_gas_limit: Number(row.block_gas_limit),
+    }));
+
+    return Response.json({ data });
   } catch (error) {
     return Response.json({ error: 'Failed to query history' }, { status: 500 });
   }

@@ -62,7 +62,7 @@ export default function GasChart() {
       }
 
       const timestamps = data.map((d) => d.timestamp);
-      const gasPrices = data.map((d) => d.gas_price / 100);
+      const gasPrices = data.map((d) => d.gas_price);
 
       const opts: any = {
         width: chartRef.current!.clientWidth,

@@ -1,24 +1,27 @@
 import type { APIContext } from 'astro';
 
-import { getEthPrice, getGasPrice } from '@/lib/ethereum';
+import { getGasPriceWei, getEthPriceRaw, formatGasPrice, formatEthPrice } from '@/lib/ethereum';
 import { getGasMessage } from '@/lib/constants';
 
 export async function GET(context: APIContext) {
   const rpcUrl = context.locals.runtime?.env?.ETH_RPC || undefined;
 
   try {
-    const [gas, eth] = await Promise.all([
-      getGasPrice(rpcUrl),
-      getEthPrice(rpcUrl),
+    const [gasPriceWei, ethPriceRaw] = await Promise.all([
+      getGasPriceWei(rpcUrl),
+      getEthPriceRaw(rpcUrl),
     ]);
+
+    const gasGwei = Math.round(formatGasPrice(gasPriceWei) * 100) / 100;
+    const ethUsd = Math.round(formatEthPrice(ethPriceRaw) * 100) / 100;
 
     return Response.json({
       gas: {
-        now: gas,
-        message: getGasMessage(gas),
+        now: gasGwei,
+        message: getGasMessage(gasGwei),
       },
       eth: {
-        price: eth,
+        price: ethUsd,
       },
       update: new Date(),
     });

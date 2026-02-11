@@ -1,9 +1,9 @@
 CREATE TABLE gas_prices (
   block_number INTEGER NOT NULL,
   timestamp INTEGER NOT NULL,
-  gas_price INTEGER NOT NULL,
-  eth_price INTEGER NOT NULL,
-  block_gas_limit INTEGER NOT NULL
+  gas_price TEXT NOT NULL,       -- raw wei
+  eth_price TEXT NOT NULL,       -- raw Chainlink answer (8 decimals)
+  block_gas_limit TEXT NOT NULL  -- raw
 );
 
 CREATE INDEX idx_timestamp ON gas_prices(timestamp DESC);
