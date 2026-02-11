@@ -49,7 +49,11 @@ export async function GET(context: APIContext) {
       block_gas_limit: Number(row.block_gas_limit),
     }));
 
-    return Response.json({ data });
+    const oldest = await db
+      .prepare('SELECT MIN(timestamp) as oldest FROM gas_prices')
+      .first<{ oldest: number | null }>();
+
+    return Response.json({ data, oldest_timestamp: oldest?.oldest ?? null });
   } catch (error) {
     return Response.json({ error: 'Failed to query history' }, { status: 500 });
   }

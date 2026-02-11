@@ -21,10 +21,25 @@ function getVar(name: string) {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }
 
+const ALL_RANGES: TimeRange[] = ['1h', '6h', '24h', '7d', '30d'];
+
+function getAvailableRanges(oldestTimestamp: number | null): TimeRange[] {
+  if (!oldestTimestamp) return ALL_RANGES;
+  const dataAgeHours = (Date.now() / 1000 - oldestTimestamp) / 3600;
+  return ALL_RANGES.filter((r) => RANGE_HOURS[r] <= Math.max(dataAgeHours * 2, 1));
+}
+
+function getBestDefaultRange(available: TimeRange[]): TimeRange {
+  // Prefer 24h, then the largest available
+  if (available.includes('24h')) return '24h';
+  return available[available.length - 1] || '1h';
+}
+
 export default function GasChart() {
   const chartRef = useRef<HTMLDivElement>(null);
   const uplotRef = useRef<any>(null);
-  const [range, setRange] = useState<TimeRange>('24h');
+  const [range, setRange] = useState<TimeRange | null>(null);
+  const [availableRanges, setAvailableRanges] = useState<TimeRange[]>(ALL_RANGES);
   const [data, setData] = useState<DataPoint[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -34,14 +49,34 @@ export default function GasChart() {
       const res = await fetch(`/api/history?hours=${hours}`);
       const json = await res.json();
       setData(json.data || []);
+
+      if (json.oldest_timestamp != null) {
+        const available = getAvailableRanges(json.oldest_timestamp);
+        setAvailableRanges(available);
+        return available;
+      }
     } catch {
       setData([]);
     } finally {
       setLoading(false);
     }
+    return null;
   }, []);
 
+  // Initial load: fetch 24h first to discover available ranges, then pick best default
   useEffect(() => {
+    fetchData(RANGE_HOURS['24h']).then((available) => {
+      if (available) {
+        setRange(getBestDefaultRange(available));
+      } else {
+        setRange('24h');
+      }
+    });
+  }, [fetchData]);
+
+  // Refetch when range changes (skip initial null)
+  useEffect(() => {
+    if (range === null) return;
     fetchData(RANGE_HOURS[range]);
   }, [range, fetchData]);
 
@@ -138,8 +173,6 @@ export default function GasChart() {
     };
   }, []);
 
-  const ranges: TimeRange[] = ['1h', '6h', '24h', '7d', '30d'];
-
   return (
     <div className="w-full max-w-content mx-auto animate-fade-in-up relative z-10">
       <h1 className="text-2xl sm:text-3xl font-semibold leading-tight mb-2 text-text-primary text-center">
@@ -152,7 +185,7 @@ export default function GasChart() {
       <div className="bg-surface-raised border border-border rounded-xl p-5">
         {/* Range selector */}
         <div className="flex justify-end gap-1 mb-4">
-          {ranges.map((r) => (
+          {availableRanges.map((r) => (
             <button
               key={r}
               onClick={() => setRange(r)}
