@@ -1,0 +1,50 @@
+---
+import StatsBar from './react/StatsBar';
+
+const pathname = Astro.url.pathname;
+---
+
+<nav class="w-full flex justify-between items-center gap-6 flex-wrap">
+  <div class="flex justify-start gap-4 items-center md:flex-row flex-col">
+    <a href="/" class="text-xl font-semibold">ETH Gas Alerts</a>
+    <StatsBar client:load />
+  </div>
+  <div class="flex items-center gap-4 md:gap-8 md:flex-row flex-col">
+    <a
+      href="/"
+      class:list={[
+        'font-semibold transition-colors hover:text-black',
+        pathname === '/' ? 'text-black' : 'text-black/50',
+      ]}
+    >
+      Live Gas
+    </a>
+    <a
+      href="/estimates"
+      class:list={[
+        'font-semibold transition-colors hover:text-black',
+        pathname === '/estimates' ? 'text-black' : 'text-black/50',
+      ]}
+    >
+      Estimates
+    </a>
+    <a
+      href="/transaction-builder"
+      class:list={[
+        'font-semibold transition-colors hover:text-black hide-mobile',
+        pathname === '/transaction-builder' ? 'text-black' : 'text-black/50',
+      ]}
+    >
+      Custom
+    </a>
+    <a
+      href="/history"
+      class:list={[
+        'font-semibold transition-colors hover:text-black',
+        pathname === '/history' ? 'text-black' : 'text-black/50',
+      ]}
+    >
+      History
+    </a>
+  </div>
+</nav>

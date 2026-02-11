@@ -1,5 +1,7 @@
 node_modules
 .DS_Store
 .env
-
-/twitter-bot/lastTweeted.json
+.dev.vars
+dist/
+.astro/
+.wrangler/

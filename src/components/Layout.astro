@@ -1,0 +1,28 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'Human-readable scale for Ethereum gas prices' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+
+    <meta property="twitter:creator" content="@gregskril" />
+    <meta property="twitter:card" content="summary_large_image" />
+  </head>
+  <body class="min-h-svh flex flex-col items-center justify-between p-6 sm:p-8 gap-18">
+    <slot />
+  </body>
+</html>

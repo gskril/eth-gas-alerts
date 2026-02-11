@@ -1,0 +1,14 @@
+---
+import Layout from '@/components/Layout.astro';
+import Nav from '@/components/Nav.astro';
+import Footer from '@/components/Footer.astro';
+import GasScale from '@/components/react/GasScale';
+---
+
+<Layout title="ETH Gas Alerts" description="Human-readable scale for Ethereum gas prices">
+  <Nav />
+  <main class="w-full">
+    <GasScale client:load />
+  </main>
+  <Footer />
+</Layout>

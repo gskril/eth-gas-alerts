@@ -1,0 +1,14 @@
+---
+import Layout from '@/components/Layout.astro';
+import Nav from '@/components/Nav.astro';
+import Footer from '@/components/Footer.astro';
+import TxBuilder from '@/components/react/TxBuilder';
+---
+
+<Layout title="Ethereum Transaction Builder - Gas Costs" description="Enter the amount of gas a transaction requires, and we'll estimate the cost of the transaction.">
+  <Nav />
+  <main class="w-full">
+    <TxBuilder client:load />
+  </main>
+  <Footer />
+</Layout>
