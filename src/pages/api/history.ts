@@ -22,7 +22,7 @@ export async function GET(context: APIContext) {
     if (hours <= 24) {
       result = await db
         .prepare(
-          'SELECT timestamp, gas_price, eth_price, block_gas_limit FROM gas_prices WHERE timestamp > ? ORDER BY timestamp ASC'
+          'SELECT timestamp, gas_price, block_gas_limit FROM gas_prices WHERE timestamp > ? ORDER BY timestamp ASC'
         )
         .bind(since)
         .all();
@@ -33,7 +33,6 @@ export async function GET(context: APIContext) {
           `SELECT
             (timestamp / ? * ?) as timestamp,
             gas_price,
-            eth_price,
             block_gas_limit
           FROM gas_prices
           WHERE timestamp > ?
@@ -47,7 +46,6 @@ export async function GET(context: APIContext) {
     const data = result.results.map((row: any) => ({
       timestamp: row.timestamp,
       gas_price: Number(formatUnits(BigInt(row.gas_price), 9)),
-      eth_price: Number(formatUnits(BigInt(row.eth_price), 8)),
       block_gas_limit: Number(row.block_gas_limit),
     }));
 

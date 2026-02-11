@@ -1,6 +1,6 @@
 import type { APIContext } from 'astro';
 
-import { getClient, getGasPriceWei, getEthPriceRaw } from '@/lib/ethereum';
+import { getClient, getGasPriceWei } from '@/lib/ethereum';
 
 export async function POST(context: APIContext) {
   const secret = context.request.headers.get('x-cron-secret');
@@ -20,21 +20,19 @@ export async function POST(context: APIContext) {
   try {
     const client = getClient(rpcUrl);
 
-    const [block, gasPriceWei, ethPriceRaw] = await Promise.all([
+    const [block, gasPriceWei] = await Promise.all([
       client.getBlock(),
       getGasPriceWei(rpcUrl),
-      getEthPriceRaw(rpcUrl),
     ]);
 
     await db
       .prepare(
-        'INSERT INTO gas_prices (block_number, timestamp, gas_price, eth_price, block_gas_limit) VALUES (?, ?, ?, ?, ?)'
+        'INSERT INTO gas_prices (block_number, timestamp, gas_price, block_gas_limit) VALUES (?, ?, ?, ?)'
       )
       .bind(
         Number(block.number),
         Number(block.timestamp),
         gasPriceWei.toString(),
-        ethPriceRaw.toString(),
         block.gasLimit.toString()
       )
       .run();

@@ -1,11 +1,10 @@
-import { createPublicClient, formatUnits, http, parseAbi } from 'viem';
+import { createPublicClient, http } from 'viem';
 import { mainnet } from 'viem/chains';
 import { execFileSync } from 'child_process';
 import { writeFileSync, unlinkSync } from 'fs';
 
-const CHAINLINK_ETH_USD = '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419' as const;
-const BLOCK_COUNT = 50;
-const BLOCK_SKIP = 5;
+const BLOCK_COUNT = 200;
+const BLOCK_SKIP = 10;
 
 async function main() {
   const rpcUrl = process.env.ETH_RPC || 'https://ethereum-rpc.publicnode.com';
@@ -18,14 +17,7 @@ async function main() {
   const latestBlock = await client.getBlock();
   const latestNumber = latestBlock.number;
 
-  const ethPriceRaw = await client.readContract({
-    address: CHAINLINK_ETH_USD,
-    abi: parseAbi(['function latestAnswer() view returns (int256)']),
-    functionName: 'latestAnswer',
-  });
-
   console.log(`Latest block: ${latestNumber}`);
-  console.log(`ETH price: $${Number(formatUnits(ethPriceRaw, 8)).toFixed(2)}`);
   console.log(`Fetching ${BLOCK_COUNT} blocks (every ${BLOCK_SKIP})...`);
 
   const blockNumbers = Array.from(
@@ -33,21 +25,30 @@ async function main() {
     (_, i) => latestNumber - BigInt(i * BLOCK_SKIP)
   );
 
-  const blocks = await Promise.all(
-    blockNumbers.map((n) => client.getBlock({ blockNumber: n }))
-  );
+  // Fetch in batches of 50 to avoid overwhelming the RPC
+  const blocks = [];
+  for (let i = 0; i < blockNumbers.length; i += 50) {
+    const batch = blockNumbers.slice(i, i + 50);
+    const results = await Promise.all(
+      batch.map((n) => client.getBlock({ blockNumber: n }))
+    );
+    blocks.push(...results);
+    if (i + 50 < blockNumbers.length) {
+      console.log(`  fetched ${blocks.length}/${BLOCK_COUNT}...`);
+    }
+  }
 
   const rows = blocks
     .filter((b) => b.baseFeePerGas != null)
     .map((b) => {
       const gasPrice = b.baseFeePerGas!.toString();
-      return `(${b.number}, ${b.timestamp}, '${gasPrice}', '${ethPriceRaw.toString()}', '${b.gasLimit.toString()}')`;
+      return `(${b.number}, ${b.timestamp}, '${gasPrice}', '${b.gasLimit.toString()}')`;
     });
 
   const sql = [
-    `CREATE TABLE IF NOT EXISTS gas_prices (block_number INTEGER NOT NULL, timestamp INTEGER NOT NULL, gas_price TEXT NOT NULL, eth_price TEXT NOT NULL, block_gas_limit TEXT NOT NULL);`,
+    `CREATE TABLE IF NOT EXISTS gas_prices (block_number INTEGER NOT NULL, timestamp INTEGER NOT NULL, gas_price TEXT NOT NULL, block_gas_limit TEXT NOT NULL);`,
     `CREATE INDEX IF NOT EXISTS idx_timestamp ON gas_prices(timestamp DESC);`,
-    `INSERT OR REPLACE INTO gas_prices (block_number, timestamp, gas_price, eth_price, block_gas_limit) VALUES\n${rows.join(',\n')};`,
+    `INSERT OR REPLACE INTO gas_prices (block_number, timestamp, gas_price, block_gas_limit) VALUES\n${rows.join(',\n')};`,
   ].join('\n');
 
   const tmpFile = '.seed-history.sql';

@@ -4,7 +4,6 @@ import 'uplot/dist/uPlot.min.css';
 interface DataPoint {
   timestamp: number;
   gas_price: number;
-  eth_price: number;
   block_gas_limit: number;
 }
 
