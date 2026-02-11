@@ -10,10 +10,12 @@ export const CHAINLINK_ABI = [
   },
 ] as const;
 
+export const GAS_SCALE_MAX = 20;
+
 export function getGasMessage(gwei: number): string {
-  if (gwei < 30) return 'Great time to make transactions!';
-  if (gwei < 50) return 'Good time to make transactions!';
-  if (gwei <= 70) return 'Decent time to make transactions.';
+  if (gwei < 3) return 'Great time to make transactions!';
+  if (gwei < 8) return 'Good time to make transactions!';
+  if (gwei <= 15) return 'Decent time to make transactions.';
   return 'Gas is pretty high, consider waiting to save money.';
 }
 

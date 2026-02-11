@@ -1,4 +1,6 @@
 ---
+import '@/styles/global.css';
+
 interface Props {
   title: string;
   description?: string;
@@ -22,7 +24,13 @@ const { title, description = 'Human-readable scale for Ethereum gas prices' } = 
     <meta property="twitter:creator" content="@gregskril" />
     <meta property="twitter:card" content="summary_large_image" />
   </head>
-  <body class="min-h-svh flex flex-col items-center justify-between p-6 sm:p-8 gap-18">
+  <body class="min-h-svh flex flex-col items-center justify-between px-5 py-6 sm:px-8 sm:py-8 gap-12 sm:gap-16 relative overflow-x-hidden">
+    <!-- Dot texture -->
+    <div class="fixed inset-0 pointer-events-none" style={`opacity: var(--dot-opacity); background-image: radial-gradient(circle at 1px 1px, var(--dot-color) 1px, transparent 0); background-size: 32px 32px;`}></div>
+
+    <!-- Ambient glow -->
+    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[500px] h-[200px] pointer-events-none" style={`opacity: var(--glow-opacity); background: radial-gradient(ellipse at center, #818cf8, transparent 70%);`}></div>
+
     <slot />
   </body>
 </html>

@@ -4,47 +4,35 @@ import StatsBar from './react/StatsBar';
 const pathname = Astro.url.pathname;
 ---
 
-<nav class="w-full flex justify-between items-center gap-6 flex-wrap">
-  <div class="flex justify-start gap-4 items-center md:flex-row flex-col">
-    <a href="/" class="text-xl font-semibold">ETH Gas Alerts</a>
+<nav class="w-full flex justify-between items-center gap-4 flex-wrap relative z-10 animate-fade-in">
+  <div class="flex justify-start gap-4 items-center">
+    <a href="/" class="text-lg font-semibold tracking-tight text-text-primary hover:text-accent transition-colors">
+      <span class="text-accent mr-1.5">&diamond;</span>ETH Gas Alerts
+    </a>
     <StatsBar client:load />
   </div>
-  <div class="flex items-center gap-4 md:gap-8 md:flex-row flex-col">
-    <a
-      href="/"
-      class:list={[
-        'font-semibold transition-colors hover:text-black',
-        pathname === '/' ? 'text-black' : 'text-black/50',
-      ]}
-    >
-      Live Gas
-    </a>
-    <a
-      href="/estimates"
-      class:list={[
-        'font-semibold transition-colors hover:text-black',
-        pathname === '/estimates' ? 'text-black' : 'text-black/50',
-      ]}
-    >
-      Estimates
-    </a>
-    <a
-      href="/transaction-builder"
-      class:list={[
-        'font-semibold transition-colors hover:text-black hide-mobile',
-        pathname === '/transaction-builder' ? 'text-black' : 'text-black/50',
-      ]}
-    >
-      Custom
-    </a>
-    <a
-      href="/history"
-      class:list={[
-        'font-semibold transition-colors hover:text-black',
-        pathname === '/history' ? 'text-black' : 'text-black/50',
-      ]}
-    >
-      History
-    </a>
+  <div class="flex items-center gap-1">
+    {[
+      { href: '/', label: 'Live Gas' },
+      { href: '/estimates', label: 'Estimates' },
+      { href: '/transaction-builder', label: 'Custom', hideOnMobile: true },
+      { href: '/history', label: 'History' },
+    ].map(({ href, label, hideOnMobile }) => {
+      const isActive = pathname === href;
+      return (
+        <a
+          href={href}
+          class:list={[
+            'px-3 py-1.5 rounded-lg text-sm font-medium transition-all',
+            isActive
+              ? 'bg-surface-overlay text-text-primary'
+              : 'text-text-secondary hover:text-text-primary hover:bg-surface-raised',
+            hideOnMobile && 'hide-mobile',
+          ]}
+        >
+          {label}
+        </a>
+      );
+    })}
   </div>
 </nav>

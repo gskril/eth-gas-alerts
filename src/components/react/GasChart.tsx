@@ -18,6 +18,10 @@ const RANGE_HOURS: Record<TimeRange, number> = {
   '30d': 720,
 };
 
+function getVar(name: string) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
 export default function GasChart() {
   const chartRef = useRef<HTMLDivElement>(null);
   const uplotRef = useRef<any>(null);
@@ -52,7 +56,6 @@ export default function GasChart() {
 
       const uPlot = uPlotModule.default;
 
-      // Clean up previous chart
       if (uplotRef.current) {
         uplotRef.current.destroy();
         uplotRef.current = null;
@@ -63,25 +66,31 @@ export default function GasChart() {
 
       const opts: any = {
         width: chartRef.current!.clientWidth,
-        height: 300,
+        height: 320,
+        padding: [16, 8, 0, 0],
         series: [
           {},
           {
             label: 'Gas (Gwei)',
-            stroke: '#3b82f6',
-            fill: 'rgba(59, 130, 246, 0.1)',
+            stroke: '#818cf8',
+            fill: 'rgba(129, 140, 248, 0.08)',
             width: 2,
+            points: { show: false },
           },
         ],
         axes: [
           {
-            stroke: '#888',
-            grid: { stroke: '#eee' },
+            stroke: getVar('--text-muted'),
+            grid: { stroke: getVar('--border'), width: 1 },
+            ticks: { stroke: getVar('--border'), width: 1 },
+            font: '11px "DM Mono", monospace',
           },
           {
-            stroke: '#888',
-            grid: { stroke: '#eee' },
-            label: 'Gwei',
+            stroke: getVar('--text-muted'),
+            grid: { stroke: getVar('--border'), width: 1 },
+            ticks: { stroke: getVar('--border'), width: 1 },
+            font: '11px "DM Mono", monospace',
+            label: '',
           },
         ],
         scales: {
@@ -89,7 +98,14 @@ export default function GasChart() {
         },
         cursor: {
           drag: { x: false, y: false },
+          points: {
+            size: 8,
+            stroke: getVar('--accent'),
+            fill: getVar('--surface'),
+            width: 2,
+          },
         },
+        legend: { show: false },
       };
 
       const plotData = [timestamps, gasPrices];
@@ -101,13 +117,12 @@ export default function GasChart() {
     };
   }, [data]);
 
-  // Resize handler
   useEffect(() => {
     const handleResize = () => {
       if (uplotRef.current && chartRef.current) {
         uplotRef.current.setSize({
           width: chartRef.current.clientWidth,
-          height: 300,
+          height: 320,
         });
       }
     };
@@ -116,7 +131,6 @@ export default function GasChart() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (uplotRef.current) {
@@ -128,36 +142,53 @@ export default function GasChart() {
   const ranges: TimeRange[] = ['1h', '6h', '24h', '7d', '30d'];
 
   return (
-    <div className="w-full max-w-content mx-auto">
-      <h1 className="text-3xl sm:text-4xl font-extrabold text-center mb-6 leading-tight">
+    <div className="w-full max-w-content mx-auto animate-fade-in-up relative z-10">
+      <h1 className="text-2xl sm:text-3xl font-semibold leading-tight mb-2 text-text-primary text-center">
         Gas Price History
       </h1>
+      <p className="text-text-secondary text-center mb-8">
+        Track Ethereum gas prices over time.
+      </p>
 
-      <div className="flex justify-center gap-2 mb-6">
-        {ranges.map((r) => (
-          <button
-            key={r}
-            onClick={() => setRange(r)}
-            className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-              range === r
-                ? 'bg-blue-500 text-white'
-                : 'bg-highlight text-black/70 hover:bg-blue-100'
-            }`}
-          >
-            {r}
-          </button>
-        ))}
-      </div>
-
-      {loading && data.length === 0 ? (
-        <div className="text-center py-20 text-gray-500">Loading chart data...</div>
-      ) : data.length === 0 ? (
-        <div className="text-center py-20 text-gray-500">
-          No history data available yet. Data will appear after the cron worker starts recording.
+      <div className="bg-surface-raised border border-border rounded-xl p-5">
+        {/* Range selector */}
+        <div className="flex justify-end gap-1 mb-4">
+          {ranges.map((r) => (
+            <button
+              key={r}
+              onClick={() => setRange(r)}
+              className={`px-3 py-1 rounded-lg text-xs font-mono font-medium transition-all ${
+                range === r
+                  ? 'bg-accent/15 text-accent border border-accent/20'
+                  : 'text-text-muted hover:text-text-secondary hover:bg-surface-overlay border border-transparent'
+              }`}
+            >
+              {r}
+            </button>
+          ))}
         </div>
-      ) : (
-        <div ref={chartRef} />
-      )}
+
+        {/* Chart */}
+        {loading && data.length === 0 ? (
+          <div className="flex items-center justify-center py-24 text-text-muted text-sm">
+            <svg className="animate-spin mr-2 h-4 w-4" viewBox="0 0 24 24" fill="none">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+            Loading chart data...
+          </div>
+        ) : data.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-24 text-text-muted text-sm">
+            <svg className="mb-3 opacity-40" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M3 3v18h18" />
+              <path d="M7 16l4-4 4 4 6-6" />
+            </svg>
+            No history data yet. Data will appear after the cron worker starts recording.
+          </div>
+        ) : (
+          <div ref={chartRef} className="[&_.u-wrap]:!bg-transparent" />
+        )}
+      </div>
     </div>
   );
 }
