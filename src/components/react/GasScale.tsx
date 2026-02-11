@@ -69,7 +69,7 @@ export default function GasScale() {
           <div className="absolute inset-x-0 top-0 h-[1px] bg-white/20 rounded-full" />
         </div>
 
-        {/* Indicator */}
+        {/* Indicator — vertical needle */}
         <div
           className="absolute top-1/2 -translate-y-1/2"
           style={{
@@ -77,14 +77,27 @@ export default function GasScale() {
             transition: 'left 0.75s cubic-bezier(0.4, 0, 0.2, 1)',
           }}
         >
-          <div className="relative -translate-x-1/2">
+          <div className="relative -translate-x-1/2 flex flex-col items-center">
+            {/* Wide ambient glow */}
             <div
-              className="absolute -inset-2 rounded-full blur-md opacity-60"
+              className="absolute w-8 h-8 rounded-full blur-lg opacity-50 -translate-y-1/2 top-1/2"
               style={{ backgroundColor: gasColor }}
             />
+            {/* Needle line */}
             <div
-              className="relative w-5 h-5 rounded-full border-[3px] border-[var(--surface)]"
-              style={{ backgroundColor: gasColor }}
+              className="relative w-[2px] h-6 rounded-full"
+              style={{
+                backgroundColor: gasColor,
+                boxShadow: `0 0 6px ${gasColor}, 0 0 12px ${gasColor}40`,
+              }}
+            />
+            {/* Center dot */}
+            <div
+              className="absolute top-1/2 -translate-y-1/2 w-[6px] h-[6px] rounded-full"
+              style={{
+                backgroundColor: '#fff',
+                boxShadow: `0 0 4px ${gasColor}, 0 0 8px ${gasColor}`,
+              }}
             />
           </div>
         </div>
