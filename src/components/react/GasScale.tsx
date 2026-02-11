@@ -47,7 +47,7 @@ export default function GasScale() {
           className="font-mono text-7xl sm:text-8xl font-medium tabular-nums tracking-tighter transition-colors duration-500"
           style={{ color: gasColor }}
         >
-          {stats ? gasNow.toFixed(1) : '--.-'}
+          {stats ? gasNow.toFixed(2) : '--.--'}
         </span>
         <span className="text-text-secondary text-xl font-mono">Gwei</span>
       </div>
