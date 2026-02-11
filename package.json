@@ -8,6 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "deploy:worker": "bun run build && wrangler deploy",
     "seed-history": "bun --env-file=.dev.vars run scripts/seed-history.ts",
     "seed-history:prod": "SEED_REMOTE=1 bun --env-file=.dev.vars run scripts/seed-history.ts"
   },

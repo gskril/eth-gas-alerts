@@ -18,6 +18,21 @@ bun dev          # Start dev server
 bun build        # Production build
 ```
 
+## Deploy (Cloudflare Workers)
+
+This project uses Astro SSR on Cloudflare Workers (not Pages).
+
+```bash
+bun run build
+bunx wrangler deploy
+```
+
+Or use the helper script:
+
+```bash
+bun run deploy:worker
+```
+
 ### Scripts
 
 ```bash
@@ -25,7 +40,7 @@ bun run seed-history        # Seed D1 with local gas history data
 bun run seed-history:prod   # Seed remote D1
 ```
 
-## Pages
+## Routes
 
 - `/` — Gas meter with real-time scale
 - `/estimates` — Fee estimates for popular protocols
