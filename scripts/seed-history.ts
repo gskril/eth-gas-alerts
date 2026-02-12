@@ -25,15 +25,13 @@ async function main() {
     (_, i) => latestNumber - BigInt(i * BLOCK_SKIP)
   );
 
-  // Fetch in batches of 50 to avoid overwhelming the RPC
+  // Fetch in batches of 100 to avoid overwhelming the RPC
   const blocks = [];
-  for (let i = 0; i < blockNumbers.length; i += 50) {
-    const batch = blockNumbers.slice(i, i + 50);
-    const results = await Promise.all(
-      batch.map((n) => client.getBlock({ blockNumber: n }))
-    );
+  for (let i = 0; i < blockNumbers.length; i += 100) {
+    const batch = blockNumbers.slice(i, i + 100);
+    const results = await Promise.all(batch.map((n) => client.getBlock({ blockNumber: n })));
     blocks.push(...results);
-    if (i + 50 < blockNumbers.length) {
+    if (i + 100 < blockNumbers.length) {
       console.log(`  fetched ${blocks.length}/${BLOCK_COUNT}...`);
     }
   }
