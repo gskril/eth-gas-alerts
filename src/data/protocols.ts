@@ -25,101 +25,86 @@ export const protocols: Protocol[] = [
         contractFunctions: [{ name: 'transfer', gas: 21000 }],
       },
       {
-        name: 'Optimized NFT mint',
-        description: 'For example, Azuki',
-        contractFunctions: [{ name: 'mint', gas: 75000 }],
+        name: 'ERC-20 token transfer',
+        description: "OpenZeppelin's ERC-20 template",
+        contractFunctions: [{ name: 'transfer', gas: 35000 }],
       },
       {
-        name: 'Average NFT mint',
-        contractFunctions: [{ name: 'mint', gas: 150000 }],
+        name: 'ERC-721 NFT transfer',
+        description: "OpenZeppelin's ERC-721 template",
+        contractFunctions: [{ name: 'safeTransferFrom', gas: 46000 }],
       },
       {
-        name: 'Expensive NFT mint',
-        contractFunctions: [{ name: 'mint', gas: 250000 }],
-      },
-      {
-        name: 'Optimized NFT transfer',
-        description: 'ERC-1155',
-        contractFunctions: [{ name: 'transferFrom', gas: 36705 }],
-      },
-      {
-        name: 'Average NFT transfer',
-        description: 'ERC-721',
-        contractFunctions: [{ name: 'transferFrom', gas: 75000 }],
-      },
-      {
-        name: 'Expensive NFT transfer',
-        description: 'ERC-721',
-        contractFunctions: [{ name: 'transferFrom', gas: 108767 }],
-      },
-      {
-        name: 'Revoke token access',
-        contractFunctions: [{ name: 'setApprovalForAll', gas: 29657 }],
+        name: 'ERC-1155 NFT transfer',
+        description: "OpenZeppelin's ERC-1155 template",
+        contractFunctions: [{ name: 'safeTransferFrom', gas: 54000 }],
       },
     ],
   },
   {
     name: 'Ethereum Name Service',
     link: 'https://ens.domains',
-    contractAddress: '0x253553366Da8546fC250F225fe3d25d0C782303b',
     actions: [
       {
         name: 'Register and set primary name',
+        description: '8 char name, just set ETH address, no additional records',
         contractFunctions: [
-          { name: 'commit', gas: 44206 },
-          { name: 'register', gas: 370000 },
+          { name: 'commit', gas: 46500 },
+          { name: 'register', gas: 280000 },
         ],
       },
       {
         name: 'Register .eth name',
+        description: '8 char name, just set ETH address, no additional records',
         contractFunctions: [
-          { name: 'commit', gas: 44206 },
-          { name: 'register', gas: 270000 },
+          { name: 'commit', gas: 46500 },
+          { name: 'register', gas: 232100 },
         ],
       },
       {
         name: 'Set primary name',
-        contractFunctions: [{ name: 'setName', gas: 114140 }],
+        description: '8 char name',
+        contractFunctions: [{ name: 'setName', gas: 78500 }],
       },
       {
         name: 'Create subdomain',
-        contractFunctions: [{ name: 'setSubnodeRecord', gas: 74380 }],
+        description: 'Unwrapped .eth name',
+        contractFunctions: [{ name: 'setSubnodeRecord', gas: 76350 }],
       },
       {
         name: 'Import DNS name',
-        contractFunctions: [{ name: 'proveAndClaim', gas: 3800000 }],
+        description: 'Average of last 5 mainnet imports',
+        contractFunctions: [{ name: 'proveAndClaimWithResolver', gas: 3371692 }],
       },
       {
         name: 'Set text record',
-        contractFunctions: [{ name: 'setText', gas: 55000 }],
+        description: 'Twitter handle',
+        contractFunctions: [{ name: 'setText', gas: 60000 }],
       },
       {
         name: 'Renew name',
-        contractFunctions: [{ name: 'renew', gas: 92000 }],
-      },
-      {
-        name: 'Wrap',
-        contractFunctions: [{ name: 'wrap', gas: 97500 }],
+        description: '8 char unwrapped name',
+        contractFunctions: [{ name: 'renew', gas: 68770 }],
       },
     ],
   },
-  {
-    name: 'Gnosis Safe',
-    link: 'https://gnosis-safe.io/',
-    contractAddress: '0xa6b71e26c5e0845f74c812102ca7114b6a896ab2',
-    actions: [
-      {
-        name: 'Safe creation (4 owners)',
-        contractFunctions: [{ name: 'createProxyWithNonce', gas: 355556 }],
-      },
-      {
-        name: 'Add owner',
-        contractFunctions: [{ name: 'addOwnerWithThreshold', gas: 83118 }],
-      },
-      {
-        name: 'Remove owner',
-        contractFunctions: [{ name: 'removeOwner', gas: 70000 }],
-      },
-    ],
-  },
+  // {
+  //   name: 'Gnosis Safe',
+  //   link: 'https://gnosis-safe.io/',
+  //   contractAddress: '0xa6b71e26c5e0845f74c812102ca7114b6a896ab2',
+  //   actions: [
+  //     {
+  //       name: 'Safe creation (4 owners)',
+  //       contractFunctions: [{ name: 'createProxyWithNonce', gas: 355556 }],
+  //     },
+  //     {
+  //       name: 'Add owner',
+  //       contractFunctions: [{ name: 'addOwnerWithThreshold', gas: 83118 }],
+  //     },
+  //     {
+  //       name: 'Remove owner',
+  //       contractFunctions: [{ name: 'removeOwner', gas: 70000 }],
+  //     },
+  //   ],
+  // },
 ];
