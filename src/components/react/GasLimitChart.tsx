@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import 'uplot/dist/uPlot.min.css';
 
 interface DataPoint {
@@ -8,31 +8,8 @@ interface DataPoint {
   block_gas_limit: number;
 }
 
-type TimeRange = '6h' | '24h' | '7d' | '30d' | '6mo';
-
-const RANGE_HOURS: Record<TimeRange, number> = {
-  '6h': 6,
-  '24h': 24,
-  '7d': 168,
-  '30d': 720,
-  '6mo': 4320,
-};
-
 function getVar(name: string) {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-}
-
-const ALL_RANGES: TimeRange[] = ['6h', '24h', '7d', '30d', '6mo'];
-
-function getAvailableRanges(oldestTimestamp: number | null): TimeRange[] {
-  if (!oldestTimestamp) return ALL_RANGES;
-  const dataAgeHours = (Date.now() / 1000 - oldestTimestamp) / 3600;
-  return ALL_RANGES.filter((r) => RANGE_HOURS[r] <= dataAgeHours);
-}
-
-function getBestDefaultRange(available: TimeRange[]): TimeRange {
-  if (available.includes('24h')) return '24h';
-  return available[available.length - 1] || '6h';
 }
 
 function formatGasLimit(val: number): string {
@@ -56,45 +33,16 @@ export default function GasLimitChart() {
   const chartRef = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const uplotRef = useRef<any>(null);
-  const [range, setRange] = useState<TimeRange | null>(null);
-  const [availableRanges, setAvailableRanges] = useState<TimeRange[]>(ALL_RANGES);
   const [data, setData] = useState<DataPoint[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchData = useCallback(async (hours: number) => {
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/history?hours=${hours}`);
-      const json = await res.json();
-      setData(json.data || []);
-
-      if (json.oldest_timestamp != null) {
-        const available = getAvailableRanges(json.oldest_timestamp);
-        setAvailableRanges(available);
-        return available;
-      }
-    } catch {
-      setData([]);
-    } finally {
-      setLoading(false);
-    }
-    return null;
+  useEffect(() => {
+    fetch('/api/history?hours=4320')
+      .then((r) => r.json())
+      .then((json) => setData(json.data || []))
+      .catch(() => setData([]))
+      .finally(() => setLoading(false));
   }, []);
-
-  useEffect(() => {
-    fetchData(RANGE_HOURS['24h']).then((available) => {
-      if (available) {
-        setRange(getBestDefaultRange(available));
-      } else {
-        setRange('24h');
-      }
-    });
-  }, [fetchData]);
-
-  useEffect(() => {
-    if (range === null) return;
-    fetchData(RANGE_HOURS[range]);
-  }, [range, fetchData]);
 
   useEffect(() => {
     if (!chartRef.current || data.length === 0) return;
@@ -243,24 +191,6 @@ export default function GasLimitChart() {
       </p>
 
       <div className="rounded-xl border border-border bg-surface-raised p-5">
-        {/* Range selector */}
-        <div className="mb-4 flex justify-end gap-1">
-          {availableRanges.map((r) => (
-            <button
-              key={r}
-              onClick={() => setRange(r)}
-              className={`rounded-lg px-3 py-1 font-mono text-xs font-medium transition-all ${
-                range === r
-                  ? 'bg-accent/15 border-accent/20 border text-accent'
-                  : 'border border-transparent text-text-muted hover:bg-surface-overlay hover:text-text-secondary'
-              }`}
-            >
-              {r}
-            </button>
-          ))}
-        </div>
-
-        {/* Chart */}
         {loading && data.length === 0 ? (
           <div className="flex items-center justify-center py-24 text-sm text-text-muted">
             <svg className="mr-2 h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
