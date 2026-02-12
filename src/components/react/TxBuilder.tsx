@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { calculateCostUsd } from '@/lib/constants';
 
@@ -6,6 +6,16 @@ export default function TxBuilder() {
   const [gasAmount, setGasAmount] = useState(0);
   const [gasPrice, setGasPrice] = useState(0);
   const [ethPrice, setEthPrice] = useState(0);
+
+  useEffect(() => {
+    fetch('/api/stats')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.gas?.now) setGasPrice(data.gas.now);
+        if (data.eth?.price) setEthPrice(data.eth.price);
+      })
+      .catch(() => {});
+  }, []);
 
   const feePrice = calculateCostUsd(gasAmount, gasPrice, ethPrice);
   const feePriceStr = feePrice.toFixed(2);
@@ -32,12 +42,14 @@ export default function TxBuilder() {
             label="Gas Price"
             suffix="gwei"
             placeholder="30"
+            value={gasPrice}
             onChange={(v) => setGasPrice(v)}
           />
           <InputField
             label="ETH Price"
             suffix="USD"
             placeholder="2000"
+            value={ethPrice}
             onChange={(v) => setEthPrice(v)}
           />
         </div>
@@ -64,11 +76,13 @@ function InputField({
   label,
   suffix,
   placeholder,
+  value,
   onChange,
 }: {
   label: string;
   suffix: string;
   placeholder: string;
+  value?: number;
   onChange: (value: number) => void;
 }) {
   return (
@@ -78,6 +92,7 @@ function InputField({
         <input
           type="number"
           placeholder={placeholder}
+          value={value !== undefined ? value || '' : undefined}
           className="focus:border-accent/50 focus:ring-accent/20 w-full rounded-lg border border-border bg-surface-overlay px-3 py-2.5 pr-14 font-mono text-text-primary transition-all placeholder:text-text-muted focus:outline-none focus:ring-1"
           onChange={(e) => onChange(Number(e.target.value))}
         />
