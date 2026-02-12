@@ -19,6 +19,19 @@ function bucketSize(hours: number): number | null {
   return 43200;
 }
 
+//  6h  → 30s   (recent data, changes quickly)
+//  24h → 2 min
+//  7d  → 10 min
+//  30d → 30 min
+//  6mo → 1 hour
+function cacheTtl(hours: number): number {
+  if (hours <= 6) return 30;
+  if (hours <= 24) return 120;
+  if (hours <= 168) return 600;
+  if (hours <= 720) return 1800;
+  return 3600;
+}
+
 export async function GET(context: APIContext) {
   const db = context.locals.runtime?.env?.DB;
 
@@ -71,7 +84,11 @@ export async function GET(context: APIContext) {
       .prepare('SELECT MIN(timestamp) as oldest FROM gas_prices')
       .first<{ oldest: number | null }>();
 
-    return Response.json({ data, oldest_timestamp: oldest?.oldest ?? null });
+    const ttl = cacheTtl(hours);
+    return Response.json(
+      { data, oldest_timestamp: oldest?.oldest ?? null },
+      { headers: { 'Cache-Control': `public, s-maxage=${ttl}, max-age=${ttl}` } }
+    );
   } catch (error) {
     return Response.json({ error: 'Failed to query history' }, { status: 500 });
   }
