@@ -1,5 +1,5 @@
 import { execFileSync } from 'child_process';
-import { unlinkSync, writeFileSync } from 'fs';
+import { readFileSync, unlinkSync, writeFileSync } from 'fs';
 import { createPublicClient, http } from 'viem';
 import { mainnet } from 'viem/chains';
 
@@ -31,10 +31,7 @@ async function main() {
     `Fetching ${BLOCK_COUNT} blocks (every ${BLOCK_SKIP}), uploading every ${DB_BATCH_SIZE}...`
   );
 
-  const header = [
-    `CREATE TABLE IF NOT EXISTS gas_prices (block_number INTEGER PRIMARY KEY, timestamp INTEGER NOT NULL, gas_price TEXT NOT NULL, block_gas_limit TEXT NOT NULL);`,
-    `CREATE INDEX IF NOT EXISTS idx_timestamp ON gas_prices(timestamp DESC);`,
-  ].join('\n');
+  const header = readFileSync('db/schema.sql', 'utf-8').trim();
 
   let rows: string[] = [];
   let totalFetched = 0;
