@@ -1,7 +1,7 @@
 import type { APIContext } from 'astro';
 import { formatUnits } from 'viem';
 
-const VALID_HOURS = new Set([1, 6, 24, 168, 720, 4320]);
+const VALID_HOURS = new Set([6, 24, 168, 720, 4320]);
 
 // Returns the time-bucket size in seconds for a given range.
 // Targets ~200-400 data points per range to keep payloads light.
@@ -39,7 +39,7 @@ export async function GET(context: APIContext) {
     if (bucket === null) {
       result = await db
         .prepare(
-          'SELECT timestamp, gas_price, block_gas_limit FROM gas_prices WHERE timestamp > ? ORDER BY timestamp ASC'
+          'SELECT block_number, timestamp, gas_price, block_gas_limit FROM gas_prices WHERE timestamp > ? ORDER BY timestamp ASC'
         )
         .bind(since)
         .all();
@@ -47,6 +47,7 @@ export async function GET(context: APIContext) {
       result = await db
         .prepare(
           `SELECT
+            MAX(block_number) as block_number,
             (timestamp / ? * ?) as timestamp,
             gas_price,
             block_gas_limit
@@ -60,6 +61,7 @@ export async function GET(context: APIContext) {
     }
 
     const data = result.results.map((row: any) => ({
+      block_number: row.block_number,
       timestamp: row.timestamp,
       gas_price: Number(formatUnits(BigInt(row.gas_price), 9)),
       block_gas_limit: Number(row.block_gas_limit),

@@ -2,15 +2,15 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import 'uplot/dist/uPlot.min.css';
 
 interface DataPoint {
+  block_number: number;
   timestamp: number;
   gas_price: number;
   block_gas_limit: number;
 }
 
-type TimeRange = '1h' | '6h' | '24h' | '7d' | '30d' | '6mo';
+type TimeRange = '6h' | '24h' | '7d' | '30d' | '6mo';
 
 const RANGE_HOURS: Record<TimeRange, number> = {
-  '1h': 1,
   '6h': 6,
   '24h': 24,
   '7d': 168,
@@ -22,7 +22,7 @@ function getVar(name: string) {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }
 
-const ALL_RANGES: TimeRange[] = ['1h', '6h', '24h', '7d', '30d', '6mo'];
+const ALL_RANGES: TimeRange[] = ['6h', '24h', '7d', '30d', '6mo'];
 
 function getAvailableRanges(oldestTimestamp: number | null): TimeRange[] {
   if (!oldestTimestamp) return ALL_RANGES;
@@ -32,7 +32,7 @@ function getAvailableRanges(oldestTimestamp: number | null): TimeRange[] {
 
 function getBestDefaultRange(available: TimeRange[]): TimeRange {
   if (available.includes('24h')) return '24h';
-  return available[available.length - 1] || '1h';
+  return available[available.length - 1] || '6h';
 }
 
 function formatGasLimit(val: number): string {
@@ -42,8 +42,19 @@ function formatGasLimit(val: number): string {
   return val.toString();
 }
 
+function formatTooltipDate(ts: number): string {
+  const d = new Date(ts * 1000);
+  return d.toLocaleString(undefined, {
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
 export default function GasLimitChart() {
   const chartRef = useRef<HTMLDivElement>(null);
+  const tooltipRef = useRef<HTMLDivElement>(null);
   const uplotRef = useRef<any>(null);
   const [range, setRange] = useState<TimeRange | null>(null);
   const [availableRanges, setAvailableRanges] = useState<TimeRange[]>(ALL_RANGES);
@@ -102,6 +113,7 @@ export default function GasLimitChart() {
 
       const timestamps = data.map((d) => d.timestamp);
       const gasLimits = data.map((d) => d.block_gas_limit);
+      const blockNumbers = data.map((d) => d.block_number);
 
       const opts: any = {
         width: chartRef.current!.clientWidth,
@@ -116,6 +128,7 @@ export default function GasLimitChart() {
             width: 2,
             points: { show: false },
           },
+          { show: false },
         ],
         axes: [
           {
@@ -146,9 +159,50 @@ export default function GasLimitChart() {
           },
         },
         legend: { show: false },
+        plugins: [
+          {
+            hooks: {
+              setCursor: (u: any) => {
+                const tt = tooltipRef.current;
+                if (!tt) return;
+                const idx = u.cursor.idx;
+                if (idx == null) {
+                  tt.style.display = 'none';
+                  return;
+                }
+                const ts = u.data[0][idx];
+                const val = u.data[1][idx];
+                if (ts == null || val == null) {
+                  tt.style.display = 'none';
+                  return;
+                }
+                tt.style.display = '';
+                const block = u.data[2][idx];
+                const dateEl = tt.children[0] as HTMLElement;
+                const blockEl = tt.children[1] as HTMLElement;
+                const valEl = tt.children[2] as HTMLElement;
+                dateEl.textContent = formatTooltipDate(ts);
+                blockEl.textContent =
+                  block != null ? `Block ${Number(block).toLocaleString()}` : '';
+                valEl.textContent = formatGasLimit(val);
+                const overRect = u.over.getBoundingClientRect();
+                const wrapRect = u.over.closest('.relative')!.getBoundingClientRect();
+                const ox = overRect.left - wrapRect.left;
+                const oy = overRect.top - wrapRect.top;
+                const left = ox + (u.cursor.left ?? 0);
+                const top = oy + (u.cursor.top ?? 0);
+                const ttW = tt.offsetWidth;
+                const wrapW = wrapRect.width;
+                const x = left + ttW + 16 > wrapW ? left - ttW - 8 : left + 8;
+                tt.style.left = `${x}px`;
+                tt.style.top = `${top - tt.offsetHeight - 8}px`;
+              },
+            },
+          },
+        ],
       };
 
-      const plotData = [timestamps, gasLimits];
+      const plotData = [timestamps, gasLimits, blockNumbers];
       uplotRef.current = new uPlot(opts, plotData as any, chartRef.current!);
     });
 
@@ -264,6 +318,15 @@ export default function GasLimitChart() {
               </div>
             )}
             <div ref={chartRef} className="[&_.u-wrap]:!bg-transparent" />
+            <div
+              ref={tooltipRef}
+              style={{ display: 'none' }}
+              className="pointer-events-none absolute z-20 rounded-lg border border-border bg-surface-overlay px-3 py-1.5 font-mono text-xs shadow-lg"
+            >
+              <div className="text-text-secondary" />
+              <div className="text-text-muted" />
+              <div className="font-semibold text-accent" />
+            </div>
           </div>
         )}
       </div>
