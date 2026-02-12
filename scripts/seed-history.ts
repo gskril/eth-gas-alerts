@@ -3,11 +3,15 @@ import { unlinkSync, writeFileSync } from 'fs';
 import { createPublicClient, http } from 'viem';
 import { mainnet } from 'viem/chains';
 
-const BLOCK_COUNT = 1000;
+const BLOCK_COUNT = 50000;
 const BLOCK_SKIP = 5;
+const RPC_BATCH_SIZE = 100;
+const DB_BATCH_SIZE = 1000;
 
 async function main() {
   const rpcUrl = process.env.ETH_RPC || 'https://ethereum-rpc.publicnode.com';
+  const remote = process.env.SEED_REMOTE === '1';
+  const tmpFile = '.seed-history.sql';
 
   const client = createPublicClient({
     chain: mainnet,
@@ -18,79 +22,74 @@ async function main() {
   const latestNumber = latestBlock.number;
 
   console.log(`Latest block: ${latestNumber}`);
-  console.log(`Fetching ${BLOCK_COUNT} blocks (every ${BLOCK_SKIP})...`);
-
-  const blockNumbers = Array.from(
-    { length: BLOCK_COUNT },
-    (_, i) => latestNumber - BigInt(i * BLOCK_SKIP)
+  console.log(
+    `Fetching ${BLOCK_COUNT} blocks (every ${BLOCK_SKIP}), uploading every ${DB_BATCH_SIZE}...`
   );
-
-  // Fetch in batches of 100 to avoid overwhelming the RPC
-  const blocks = [];
-  for (let i = 0; i < blockNumbers.length; i += 100) {
-    const batch = blockNumbers.slice(i, i + 100);
-    const results = await Promise.all(batch.map((n) => client.getBlock({ blockNumber: n })));
-    blocks.push(...results);
-    if (i + 100 < blockNumbers.length) {
-      console.log(`  fetched ${blocks.length}/${BLOCK_COUNT}...`);
-    }
-  }
-
-  const rows = blocks
-    .filter((b) => b.baseFeePerGas != null)
-    .map((b) => {
-      const gasPrice = b.baseFeePerGas!.toString();
-      return `(${b.number}, ${b.timestamp}, '${gasPrice}', '${b.gasLimit.toString()}')`;
-    });
-
-  const CHUNK_SIZE = 1000;
-  const tmpFile = '.seed-history.sql';
 
   const header = [
     `CREATE TABLE IF NOT EXISTS gas_prices (block_number INTEGER PRIMARY KEY, timestamp INTEGER NOT NULL, gas_price TEXT NOT NULL, block_gas_limit TEXT NOT NULL);`,
     `CREATE INDEX IF NOT EXISTS idx_timestamp ON gas_prices(timestamp DESC);`,
   ].join('\n');
 
-  const chunks = [];
-  for (let i = 0; i < rows.length; i += CHUNK_SIZE) {
-    chunks.push(rows.slice(i, i + CHUNK_SIZE));
-  }
+  let rows: string[] = [];
+  let totalFetched = 0;
+  let totalUploaded = 0;
+  let isFirstBatch = true;
 
-  console.log(`Inserting ${rows.length} records in ${chunks.length} batch(es)...`);
+  for (let i = 0; i < BLOCK_COUNT; i += RPC_BATCH_SIZE) {
+    const batchSize = Math.min(RPC_BATCH_SIZE, BLOCK_COUNT - i);
+    const blockNumbers = Array.from(
+      { length: batchSize },
+      (_, j) => latestNumber - BigInt((i + j) * BLOCK_SKIP)
+    );
 
-  for (let i = 0; i < chunks.length; i++) {
-    const sql =
-      i === 0
-        ? `${header}\nINSERT OR REPLACE INTO gas_prices (block_number, timestamp, gas_price, block_gas_limit) VALUES\n${chunks[i].join(',\n')};`
-        : `INSERT OR REPLACE INTO gas_prices (block_number, timestamp, gas_price, block_gas_limit) VALUES\n${chunks[i].join(',\n')};`;
+    const blocks = await Promise.all(blockNumbers.map((n) => client.getBlock({ blockNumber: n })));
+    totalFetched += blocks.length;
 
-    writeFileSync(tmpFile, sql);
+    for (const b of blocks) {
+      if (b.baseFeePerGas != null) {
+        rows.push(
+          `(${b.number}, ${b.timestamp}, '${b.baseFeePerGas.toString()}', '${b.gasLimit.toString()}')`
+        );
+      }
+    }
 
-    try {
-      const remote = process.env.SEED_REMOTE === '1';
-      execFileSync(
-        'bunx',
-        [
-          'wrangler',
-          'd1',
-          'execute',
-          'eth-gas-alerts',
-          ...(remote ? [`--remote`] : ['--local']),
-          `--file=${tmpFile}`,
-        ],
-        {
-          stdio: 'inherit',
-        }
-      );
-      console.log(`  batch ${i + 1}/${chunks.length} done (${chunks[i].length} rows)`);
-    } catch (err) {
-      console.error(`  batch ${i + 1} failed:`, err);
-      throw err;
+    console.log(`  fetched ${totalFetched}/${BLOCK_COUNT} blocks (${rows.length} rows buffered)`);
+
+    // Upload when we have enough rows or this is the last RPC batch
+    while (rows.length >= DB_BATCH_SIZE || (totalFetched >= BLOCK_COUNT && rows.length > 0)) {
+      const chunk = rows.splice(0, DB_BATCH_SIZE);
+      const sql = isFirstBatch
+        ? `${header}\nINSERT OR REPLACE INTO gas_prices (block_number, timestamp, gas_price, block_gas_limit) VALUES\n${chunk.join(',\n')};`
+        : `INSERT OR REPLACE INTO gas_prices (block_number, timestamp, gas_price, block_gas_limit) VALUES\n${chunk.join(',\n')};`;
+
+      writeFileSync(tmpFile, sql);
+
+      try {
+        execFileSync(
+          'bunx',
+          [
+            'wrangler',
+            'd1',
+            'execute',
+            'eth-gas-alerts',
+            ...(remote ? ['--remote', '--yes'] : ['--local']),
+            `--file=${tmpFile}`,
+          ],
+          { stdio: 'inherit' }
+        );
+        totalUploaded += chunk.length;
+        console.log(`  uploaded ${totalUploaded} rows`);
+        isFirstBatch = false;
+      } catch (err) {
+        console.error(`  upload failed at ${totalUploaded} rows:`, err);
+        throw err;
+      }
     }
   }
 
   unlinkSync(tmpFile);
-  console.log('Done! Restart the dev server to see history data.');
+  console.log(`Done! ${totalUploaded} rows uploaded.`);
 }
 
 main().catch(console.error);
