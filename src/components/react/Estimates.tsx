@@ -30,6 +30,7 @@ function EstimatesInner() {
 
   const gasPriceEstimate = (gasAmount: number) => {
     const cost = calculateCostUsd(gasAmount, gasPrice, ethPrice);
+    if (cost > 0 && cost < 0.01) return '<$0.01';
     return `$${cost.toFixed(2)}`;
   };
 
