@@ -1,12 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import 'uplot/dist/uPlot.min.css';
 
-interface DataPoint {
-  block_number: number;
-  timestamp: number;
-  gas_price: number;
-  block_gas_limit: number;
-}
+import { useHistory } from '@/lib/hooks';
+
+import QueryProvider from './QueryProvider';
 
 function getVar(name: string) {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -30,22 +27,23 @@ function formatTooltipDate(ts: number): string {
 }
 
 export default function GasLimitChart() {
+  return (
+    <QueryProvider>
+      <GasLimitChartInner />
+    </QueryProvider>
+  );
+}
+
+function GasLimitChartInner() {
   const chartRef = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const uplotRef = useRef<any>(null);
-  const [data, setData] = useState<DataPoint[]>([]);
-  const [loading, setLoading] = useState(true);
+
+  const { data: historyData, isPending } = useHistory(4320);
+  const points = historyData?.data ?? [];
 
   useEffect(() => {
-    fetch('/api/history?hours=4320')
-      .then((r) => r.json())
-      .then((json) => setData(json.data || []))
-      .catch(() => setData([]))
-      .finally(() => setLoading(false));
-  }, []);
-
-  useEffect(() => {
-    if (!chartRef.current || data.length === 0) return;
+    if (!chartRef.current || points.length === 0) return;
 
     let cancelled = false;
 
@@ -59,9 +57,9 @@ export default function GasLimitChart() {
         uplotRef.current = null;
       }
 
-      const timestamps = data.map((d) => d.timestamp);
-      const gasLimits = data.map((d) => d.block_gas_limit);
-      const blockNumbers = data.map((d) => d.block_number);
+      const timestamps = points.map((d) => d.timestamp);
+      const gasLimits = points.map((d) => d.block_gas_limit);
+      const blockNumbers = points.map((d) => d.block_number);
 
       const opts: any = {
         width: chartRef.current!.clientWidth,
@@ -157,7 +155,7 @@ export default function GasLimitChart() {
     return () => {
       cancelled = true;
     };
-  }, [data]);
+  }, [points]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -191,7 +189,7 @@ export default function GasLimitChart() {
       </p>
 
       <div className="rounded-xl border border-border bg-surface-raised p-5">
-        {loading && data.length === 0 ? (
+        {isPending ? (
           <div className="flex items-center justify-center py-24 text-sm text-text-muted">
             <svg className="mr-2 h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
               <circle
@@ -210,7 +208,7 @@ export default function GasLimitChart() {
             </svg>
             Loading chart data...
           </div>
-        ) : data.length === 0 ? (
+        ) : points.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-sm text-text-muted">
             <svg
               className="mb-3 opacity-40"
@@ -228,25 +226,6 @@ export default function GasLimitChart() {
           </div>
         ) : (
           <div className="relative">
-            {loading && (
-              <div className="bg-surface-raised/60 absolute inset-0 z-10 flex items-center justify-center rounded-lg backdrop-blur-[1px] transition-opacity">
-                <svg className="h-5 w-5 animate-spin text-accent" viewBox="0 0 24 24" fill="none">
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                  />
-                </svg>
-              </div>
-            )}
             <div ref={chartRef} className="[&_.u-wrap]:!bg-transparent" />
             <div
               ref={tooltipRef}

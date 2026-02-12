@@ -1,12 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import 'uplot/dist/uPlot.min.css';
 
-interface DataPoint {
-  block_number: number;
-  timestamp: number;
-  gas_price: number;
-  block_gas_limit: number;
-}
+import { useHistory } from '@/lib/hooks';
+
+import QueryProvider from './QueryProvider';
 
 type TimeRange = '6h' | '24h' | '7d' | '30d' | '6mo';
 
@@ -31,7 +28,6 @@ function getAvailableRanges(oldestTimestamp: number | null): TimeRange[] {
 }
 
 function getBestDefaultRange(available: TimeRange[]): TimeRange {
-  // Prefer 24h, then the largest available
   if (available.includes('24h')) return '24h';
   return available[available.length - 1] || '6h';
 }
@@ -47,53 +43,35 @@ function formatTooltipDate(ts: number): string {
 }
 
 export default function GasChart() {
+  return (
+    <QueryProvider>
+      <GasChartInner />
+    </QueryProvider>
+  );
+}
+
+function GasChartInner() {
   const chartRef = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const uplotRef = useRef<any>(null);
-  const [range, setRange] = useState<TimeRange | null>(null);
-  const [availableRanges, setAvailableRanges] = useState<TimeRange[]>(ALL_RANGES);
-  const [data, setData] = useState<DataPoint[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [range, setRange] = useState<TimeRange>('24h');
+  const initializedRef = useRef(false);
 
-  const fetchData = useCallback(async (hours: number) => {
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/history?hours=${hours}`);
-      const json = await res.json();
-      setData(json.data || []);
+  const { data: historyData, isPending, isFetching } = useHistory(RANGE_HOURS[range]);
+  const points = historyData?.data ?? [];
+  const availableRanges = getAvailableRanges(historyData?.oldest_timestamp ?? null);
 
-      if (json.oldest_timestamp != null) {
-        const available = getAvailableRanges(json.oldest_timestamp);
-        setAvailableRanges(available);
-        return available;
-      }
-    } catch {
-      setData([]);
-    } finally {
-      setLoading(false);
+  // One-time: pick the best default range once data arrives
+  useEffect(() => {
+    if (historyData && !initializedRef.current) {
+      initializedRef.current = true;
+      const best = getBestDefaultRange(availableRanges);
+      if (best !== range) setRange(best);
     }
-    return null;
-  }, []);
-
-  // Initial load: fetch 24h first to discover available ranges, then pick best default
-  useEffect(() => {
-    fetchData(RANGE_HOURS['24h']).then((available) => {
-      if (available) {
-        setRange(getBestDefaultRange(available));
-      } else {
-        setRange('24h');
-      }
-    });
-  }, [fetchData]);
-
-  // Refetch when range changes (skip initial null)
-  useEffect(() => {
-    if (range === null) return;
-    fetchData(RANGE_HOURS[range]);
-  }, [range, fetchData]);
+  }, [historyData, availableRanges, range]);
 
   useEffect(() => {
-    if (!chartRef.current || data.length === 0) return;
+    if (!chartRef.current || points.length === 0) return;
 
     let cancelled = false;
 
@@ -107,9 +85,9 @@ export default function GasChart() {
         uplotRef.current = null;
       }
 
-      const timestamps = data.map((d) => d.timestamp);
-      const gasPrices = data.map((d) => d.gas_price);
-      const blockNumbers = data.map((d) => d.block_number);
+      const timestamps = points.map((d) => d.timestamp);
+      const gasPrices = points.map((d) => d.gas_price);
+      const blockNumbers = points.map((d) => d.block_number);
 
       const opts: any = {
         width: chartRef.current!.clientWidth,
@@ -204,7 +182,7 @@ export default function GasChart() {
     return () => {
       cancelled = true;
     };
-  }, [data]);
+  }, [points]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -227,6 +205,9 @@ export default function GasChart() {
       }
     };
   }, []);
+
+  const loading = isPending;
+  const fetching = isFetching && !isPending;
 
   return (
     <div className="relative z-10 mx-auto w-full max-w-content animate-fade-in-up">
@@ -254,7 +235,7 @@ export default function GasChart() {
         </div>
 
         {/* Chart */}
-        {loading && data.length === 0 ? (
+        {loading ? (
           <div className="flex items-center justify-center py-24 text-sm text-text-muted">
             <svg className="mr-2 h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
               <circle
@@ -273,7 +254,7 @@ export default function GasChart() {
             </svg>
             Loading chart data...
           </div>
-        ) : data.length === 0 ? (
+        ) : points.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-sm text-text-muted">
             <svg
               className="mb-3 opacity-40"
@@ -291,7 +272,7 @@ export default function GasChart() {
           </div>
         ) : (
           <div className="relative">
-            {loading && (
+            {fetching && (
               <div className="bg-surface-raised/60 absolute inset-0 z-10 flex items-center justify-center rounded-lg backdrop-blur-[1px] transition-opacity">
                 <svg className="h-5 w-5 animate-spin text-accent" viewBox="0 0 24 24" fill="none">
                   <circle

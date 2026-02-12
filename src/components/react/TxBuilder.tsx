@@ -1,21 +1,32 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { calculateCostUsd } from '@/lib/constants';
+import { useStats } from '@/lib/hooks';
+
+import QueryProvider from './QueryProvider';
 
 export default function TxBuilder() {
+  return (
+    <QueryProvider>
+      <TxBuilderInner />
+    </QueryProvider>
+  );
+}
+
+function TxBuilderInner() {
+  const { data: stats } = useStats();
   const [gasAmount, setGasAmount] = useState(0);
   const [gasPrice, setGasPrice] = useState(0);
   const [ethPrice, setEthPrice] = useState(0);
+  const seededRef = useRef(false);
 
   useEffect(() => {
-    fetch('/api/stats')
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.gas?.now) setGasPrice(data.gas.now);
-        if (data.eth?.price) setEthPrice(data.eth.price);
-      })
-      .catch(() => {});
-  }, []);
+    if (stats && !seededRef.current) {
+      seededRef.current = true;
+      if (stats.gas?.now) setGasPrice(stats.gas.now);
+      if (stats.eth?.price) setEthPrice(stats.eth.price);
+    }
+  }, [stats]);
 
   const feePrice = calculateCostUsd(gasAmount, gasPrice, ethPrice);
   const feePriceStr = feePrice.toFixed(2);

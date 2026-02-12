@@ -4,7 +4,17 @@ import { protocols } from '@/data/protocols';
 import { calculateCostUsd } from '@/lib/constants';
 import { useStats } from '@/lib/hooks';
 
+import QueryProvider from './QueryProvider';
+
 export default function Estimates() {
+  return (
+    <QueryProvider>
+      <EstimatesInner />
+    </QueryProvider>
+  );
+}
+
+function EstimatesInner() {
   const { data: stats } = useStats();
   const [didMoveSlider, setDidMoveSlider] = useState(false);
   const [sliderValue, setSliderValue] = useState(0);

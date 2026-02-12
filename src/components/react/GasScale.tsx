@@ -1,5 +1,7 @@
 import { useStats } from '@/lib/hooks';
 
+import QueryProvider from './QueryProvider';
+
 const SCALE_TIERS = [
   { max: 10, labels: [0, 2, 4, 6, 8, 10] },
   { max: 50, labels: [0, 10, 20, 30, 40, 50] },
@@ -11,6 +13,14 @@ function getScaleTier(gwei: number) {
 }
 
 export default function GasScale() {
+  return (
+    <QueryProvider>
+      <GasScaleInner />
+    </QueryProvider>
+  );
+}
+
+function GasScaleInner() {
   const { data: stats } = useStats();
 
   const gasNow = typeof stats?.gas.now === 'number' ? stats.gas.now : 0;

@@ -1,6 +1,16 @@
 import { useStats } from '@/lib/hooks';
 
+import QueryProvider from './QueryProvider';
+
 export default function StatsBar() {
+  return (
+    <QueryProvider>
+      <StatsBarInner />
+    </QueryProvider>
+  );
+}
+
+function StatsBarInner() {
   const { data: stats } = useStats();
 
   const gasNum = typeof stats?.gas.now === 'number' ? stats.gas.now : 0;
