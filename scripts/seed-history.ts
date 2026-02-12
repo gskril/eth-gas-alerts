@@ -7,6 +7,11 @@ const BLOCK_COUNT = 50000;
 const BLOCK_SKIP = 5;
 const RPC_BATCH_SIZE = 100;
 const DB_BATCH_SIZE = 1000;
+// calculate history: BLOCK_COUNT * BLOCK_SKIP * 12 seconds to days
+// 50k BLOCK_COPUNT gives us 34 days of history
+// 260k BLOCK_COUNT gives us 180 days of history
+// Wipe db before seeding:
+// bunx wrangler d1 execute eth-gas-alerts --remote --command "DROP TABLE IF EXISTS gas_prices;"
 
 async function main() {
   const rpcUrl = process.env.ETH_RPC || 'https://ethereum-rpc.publicnode.com';
