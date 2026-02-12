@@ -60,8 +60,8 @@ async function main() {
     while (rows.length >= DB_BATCH_SIZE || (totalFetched >= BLOCK_COUNT && rows.length > 0)) {
       const chunk = rows.splice(0, DB_BATCH_SIZE);
       const sql = isFirstBatch
-        ? `${header}\nINSERT OR REPLACE INTO gas_prices (block_number, timestamp, gas_price, block_gas_limit) VALUES\n${chunk.join(',\n')};`
-        : `INSERT OR REPLACE INTO gas_prices (block_number, timestamp, gas_price, block_gas_limit) VALUES\n${chunk.join(',\n')};`;
+        ? `${header}\nINSERT OR IGNORE INTO gas_prices (block_number, timestamp, gas_price, block_gas_limit) VALUES\n${chunk.join(',\n')};`
+        : `INSERT OR IGNORE INTO gas_prices (block_number, timestamp, gas_price, block_gas_limit) VALUES\n${chunk.join(',\n')};`;
 
       writeFileSync(tmpFile, sql);
 
