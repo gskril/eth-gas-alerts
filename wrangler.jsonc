@@ -3,22 +3,18 @@
   "main": "dist/_worker.js/index.js",
   "assets": {
     "binding": "ASSETS",
-    "directory": "./dist"
+    "directory": "./dist",
   },
   "compatibility_date": "2026-02-11",
-  "compatibility_flags": [
-    "nodejs_compat"
-  ],
+  "compatibility_flags": ["nodejs_compat"],
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "eth-gas-alerts",
-      "database_id": "dcbadccc-0a16-4c53-887c-6d1e493d8ab2"
-    }
+      "database_id": "dcbadccc-0a16-4c53-887c-6d1e493d8ab2",
+    },
   ],
   "triggers": {
-    "crons": [
-      "* * * * *"
-    ]
-  }
+    "crons": ["* * * * *"],
+  },
 }

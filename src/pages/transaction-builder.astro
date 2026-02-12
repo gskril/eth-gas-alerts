@@ -5,7 +5,10 @@ import Footer from '@/components/Footer.astro';
 import TxBuilder from '@/components/react/TxBuilder';
 ---
 
-<Layout title="Ethereum Transaction Builder - Gas Costs" description="Enter the amount of gas a transaction requires, and we'll estimate the cost of the transaction.">
+<Layout
+  title="Ethereum Transaction Builder - Gas Costs"
+  description="Enter the amount of gas a transaction requires, and we'll estimate the cost of the transaction."
+>
   <Nav />
   <main class="w-full">
     <TxBuilder client:load />

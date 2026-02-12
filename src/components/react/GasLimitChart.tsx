@@ -180,25 +180,25 @@ export default function GasLimitChart() {
   }, []);
 
   return (
-    <div className="w-full max-w-content mx-auto animate-fade-in-up relative z-10 mt-12">
-      <h2 className="text-xl sm:text-2xl font-semibold leading-tight mb-2 text-text-primary text-center">
+    <div className="relative z-10 mx-auto mt-12 w-full max-w-content animate-fade-in-up">
+      <h2 className="mb-2 text-center text-xl font-semibold leading-tight text-text-primary sm:text-2xl">
         Block Gas Limit
       </h2>
-      <p className="text-text-secondary text-center mb-8">
+      <p className="mb-8 text-center text-text-secondary">
         Track the Ethereum block gas limit over time.
       </p>
 
-      <div className="bg-surface-raised border border-border rounded-xl p-5">
+      <div className="rounded-xl border border-border bg-surface-raised p-5">
         {/* Range selector */}
-        <div className="flex justify-end gap-1 mb-4">
+        <div className="mb-4 flex justify-end gap-1">
           {availableRanges.map((r) => (
             <button
               key={r}
               onClick={() => setRange(r)}
-              className={`px-3 py-1 rounded-lg text-xs font-mono font-medium transition-all ${
+              className={`rounded-lg px-3 py-1 font-mono text-xs font-medium transition-all ${
                 range === r
-                  ? 'bg-accent/15 text-accent border border-accent/20'
-                  : 'text-text-muted hover:text-text-secondary hover:bg-surface-overlay border border-transparent'
+                  ? 'bg-accent/15 border-accent/20 border text-accent'
+                  : 'border border-transparent text-text-muted hover:bg-surface-overlay hover:text-text-secondary'
               }`}
             >
               {r}
@@ -208,16 +208,35 @@ export default function GasLimitChart() {
 
         {/* Chart */}
         {loading && data.length === 0 ? (
-          <div className="flex items-center justify-center py-24 text-text-muted text-sm">
-            <svg className="animate-spin mr-2 h-4 w-4" viewBox="0 0 24 24" fill="none">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          <div className="flex items-center justify-center py-24 text-sm text-text-muted">
+            <svg className="mr-2 h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="3"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+              />
             </svg>
             Loading chart data...
           </div>
         ) : data.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-24 text-text-muted text-sm">
-            <svg className="mb-3 opacity-40" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <div className="flex flex-col items-center justify-center py-24 text-sm text-text-muted">
+            <svg
+              className="mb-3 opacity-40"
+              width="32"
+              height="32"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            >
               <path d="M3 3v18h18" />
               <path d="M7 16l4-4 4 4 6-6" />
             </svg>
@@ -226,10 +245,21 @@ export default function GasLimitChart() {
         ) : (
           <div className="relative">
             {loading && (
-              <div className="absolute inset-0 z-10 flex items-center justify-center bg-surface-raised/60 rounded-lg backdrop-blur-[1px] transition-opacity">
-                <svg className="animate-spin h-5 w-5 text-accent" viewBox="0 0 24 24" fill="none">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              <div className="bg-surface-raised/60 absolute inset-0 z-10 flex items-center justify-center rounded-lg backdrop-blur-[1px] transition-opacity">
+                <svg className="h-5 w-5 animate-spin text-accent" viewBox="0 0 24 24" fill="none">
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  />
                 </svg>
               </div>
             )}

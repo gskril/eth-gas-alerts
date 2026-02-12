@@ -31,19 +31,20 @@ export default function Estimates() {
   };
 
   return (
-    <div className="w-full max-w-content mx-auto animate-fade-in-up relative z-10">
-      <h1 className="text-2xl sm:text-3xl font-semibold leading-tight mb-2 text-text-primary">
+    <div className="relative z-10 mx-auto w-full max-w-content animate-fade-in-up">
+      <h1 className="mb-2 text-2xl font-semibold leading-tight text-text-primary sm:text-3xl">
         Gas Estimates
       </h1>
-      <p className="text-text-secondary mb-8 max-w-lg">
-        Fee estimates for popular Ethereum protocols at current gas prices. Adjust the slider to see costs at different gas levels.
+      <p className="mb-8 max-w-lg text-text-secondary">
+        Fee estimates for popular Ethereum protocols at current gas prices. Adjust the slider to see
+        costs at different gas levels.
       </p>
 
       {/* Slider section */}
-      <div className="bg-surface-raised border border-border rounded-xl p-5 mb-8">
-        <div className="flex items-baseline justify-between mb-4">
+      <div className="mb-8 rounded-xl border border-border bg-surface-raised p-5">
+        <div className="mb-4 flex items-baseline justify-between">
           <span className="text-sm text-text-secondary">Gas Price</span>
-          <span className="font-mono text-2xl font-medium text-text-primary tabular-nums">
+          <span className="font-mono text-2xl font-medium tabular-nums text-text-primary">
             {sliderValue} <span className="text-sm text-text-muted">Gwei</span>
           </span>
         </div>
@@ -56,7 +57,7 @@ export default function Estimates() {
           onChange={handleSliderChange}
           className="w-full"
         />
-        <div className="flex justify-between text-[10px] font-mono text-text-muted mt-2">
+        <div className="mt-2 flex justify-between font-mono text-[10px] text-text-muted">
           <span>0</span>
           <span>10</span>
           <span>20</span>
@@ -67,23 +68,23 @@ export default function Estimates() {
       </div>
 
       {/* Protocol cards */}
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {protocols.map((project, idx) => (
           <div
             key={project.name}
-            className="bg-surface-raised border border-border rounded-xl p-5 transition-all hover:border-border/80 hover:shadow-lg hover:shadow-black/20"
+            className="hover:border-border/80 rounded-xl border border-border bg-surface-raised p-5 transition-all hover:shadow-lg hover:shadow-black/20"
             style={{ animationDelay: `${idx * 80}ms` }}
           >
-            <h2 className="text-base font-semibold mb-4 flex items-center gap-2">
+            <h2 className="mb-4 flex items-center gap-2 text-base font-semibold">
               {project.link ? (
                 <a
                   href={project.link}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-text-primary hover:text-accent transition-colors"
+                  className="text-text-primary transition-colors hover:text-accent"
                 >
                   {project.name}
-                  <span className="text-text-muted ml-1 text-xs">{'\u2197'}</span>
+                  <span className="ml-1 text-xs text-text-muted">{'\u2197'}</span>
                 </a>
               ) : (
                 <span className="text-text-primary">{project.name}</span>
@@ -97,15 +98,15 @@ export default function Estimates() {
 
                 return (
                   <details key={action.name} className="group">
-                    <summary className="cursor-pointer py-1.5 flex items-center justify-between text-sm rounded-lg hover:bg-surface-overlay px-2 -mx-2 transition-colors">
-                      <span className="text-text-secondary group-open:text-text-primary transition-colors">
+                    <summary className="-mx-2 flex cursor-pointer items-center justify-between rounded-lg px-2 py-1.5 text-sm transition-colors hover:bg-surface-overlay">
+                      <span className="text-text-secondary transition-colors group-open:text-text-primary">
                         {action.name}
                       </span>
-                      <span className="font-mono text-text-primary tabular-nums">
+                      <span className="font-mono tabular-nums text-text-primary">
                         {gasPriceEstimate(totalGas)}
                       </span>
                     </summary>
-                    <div className="text-xs text-text-muted pl-2 pb-2 font-mono">
+                    <div className="pb-2 pl-2 font-mono text-xs text-text-muted">
                       {action.contractFunctions.map((f, i) => (
                         <span key={i}>
                           {f.name}

@@ -1,11 +1,7 @@
-import type { SSRManifest } from 'astro';
-import type {
-  D1Database,
-  ExecutionContext,
-  ScheduledEvent,
-} from '@cloudflare/workers-types';
-import { App } from 'astro/app';
 import { handle } from '@astrojs/cloudflare/handler';
+import type { D1Database, ExecutionContext, ScheduledEvent } from '@cloudflare/workers-types';
+import type { SSRManifest } from 'astro';
+import { App } from 'astro/app';
 import { createPublicClient, http } from 'viem';
 import { mainnet } from 'viem/chains';
 
@@ -34,10 +30,7 @@ export function createExports(manifest: SSRManifest) {
           transport: http(env.ETH_RPC || 'https://ethereum-rpc.publicnode.com', { batch: true }),
         });
 
-        const [block, gasPrice] = await Promise.all([
-          client.getBlock(),
-          client.getGasPrice(),
-        ]);
+        const [block, gasPrice] = await Promise.all([client.getBlock(), client.getGasPrice()]);
 
         await env.DB.prepare(
           'INSERT OR IGNORE INTO gas_prices (block_number, timestamp, gas_price, block_gas_limit) VALUES (?, ?, ?, ?)'

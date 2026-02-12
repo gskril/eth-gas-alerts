@@ -4,58 +4,58 @@ const SCALE_TIERS = [
   { max: 10, labels: [0, 2, 4, 6, 8, 10] },
   { max: 50, labels: [0, 10, 20, 30, 40, 50] },
   { max: 150, labels: [0, 30, 60, 90, 120, 150] },
-]
+];
 
 function getScaleTier(gwei: number) {
-  return (
-    SCALE_TIERS.find((t) => gwei < t.max) || SCALE_TIERS[SCALE_TIERS.length - 1]
-  )
+  return SCALE_TIERS.find((t) => gwei < t.max) || SCALE_TIERS[SCALE_TIERS.length - 1];
 }
 
 export default function GasScale() {
   const { data: stats } = useStats();
 
-  const gasNow = typeof stats?.gas.now === 'number' ? stats.gas.now : 0
-  const tier = getScaleTier(gasNow)
-  const scalePercentage = (gasNow / tier.max) * 100
-  const position = Math.min(scalePercentage, 98) || 50
+  const gasNow = typeof stats?.gas.now === 'number' ? stats.gas.now : 0;
+  const tier = getScaleTier(gasNow);
+  const scalePercentage = (gasNow / tier.max) * 100;
+  const position = Math.min(scalePercentage, 98) || 50;
 
   // Vibrant hex for decorative glow/needle effects (doesn't need contrast)
-  const glowColor = gasNow < 3 ? '#34d399' : gasNow < 8 ? '#fbbf24' : '#f87171'
+  const glowColor = gasNow < 3 ? '#34d399' : gasNow < 8 ? '#fbbf24' : '#f87171';
 
   return (
-    <div className="w-full max-w-content mx-auto animate-fade-in-up relative z-10">
+    <div className="relative z-10 mx-auto w-full max-w-content animate-fade-in-up">
       {/* Big gas number */}
-      <div className="flex items-baseline justify-center gap-3 mb-10">
+      <div className="mb-10 flex items-baseline justify-center gap-3">
         <span
-          className="font-mono text-7xl sm:text-8xl font-medium tabular-nums tracking-tighter transition-colors duration-500 text-gas-low"
-          style={{ color: gasNow < 3 ? 'var(--gas-low)' : gasNow < 8 ? 'var(--gas-mid)' : 'var(--gas-high)' }}
+          className="font-mono text-7xl font-medium tabular-nums tracking-tighter text-gas-low transition-colors duration-500 sm:text-8xl"
+          style={{
+            color:
+              gasNow < 3 ? 'var(--gas-low)' : gasNow < 8 ? 'var(--gas-mid)' : 'var(--gas-high)',
+          }}
         >
           {stats ? gasNow.toFixed(2) : '-.--'}
         </span>
-        <span className="text-text-secondary text-xl font-mono">Gwei</span>
+        <span className="font-mono text-xl text-text-secondary">Gwei</span>
       </div>
 
       {/* Scale */}
       <div className="relative mb-14">
         {/* Glow under the bar */}
         <div
-          className="absolute inset-0 top-px blur-xl opacity-40 rounded-full"
+          className="absolute inset-0 top-px rounded-full opacity-40 blur-xl"
           style={{
-            background:
-              'linear-gradient(90deg, #34d399 0%, #fbbf24 40%, #f87171 80%)',
+            background: 'linear-gradient(90deg, #34d399 0%, #fbbf24 40%, #f87171 80%)',
           }}
         />
 
         {/* The bar */}
         <div
-          className="relative w-full h-3 rounded-full overflow-hidden"
+          className="relative h-3 w-full overflow-hidden rounded-full"
           style={{
             background:
               'linear-gradient(90deg, #34d399 0%, #22c55e 15%, #a3e635 30%, #fbbf24 50%, #f97316 65%, #f87171 80%, #ef4444 100%)',
           }}
         >
-          <div className="absolute inset-x-0 top-0 h-[1px] bg-white/20 rounded-full" />
+          <div className="absolute inset-x-0 top-0 h-[1px] rounded-full bg-white/20" />
         </div>
 
         {/* Indicator — vertical needle */}
@@ -66,15 +66,15 @@ export default function GasScale() {
             transition: 'left 0.75s cubic-bezier(0.4, 0, 0.2, 1)',
           }}
         >
-          <div className="relative -translate-x-1/2 flex flex-col items-center">
+          <div className="relative flex -translate-x-1/2 flex-col items-center">
             {/* Wide ambient glow */}
             <div
-              className="absolute w-8 h-8 rounded-full blur-lg opacity-50 -translate-y-1/2 top-1/2"
+              className="absolute top-1/2 h-8 w-8 -translate-y-1/2 rounded-full opacity-50 blur-lg"
               style={{ backgroundColor: glowColor }}
             />
             {/* Needle line */}
             <div
-              className="relative w-[2px] h-4 rounded-full"
+              className="relative h-4 w-[2px] rounded-full"
               style={{
                 backgroundColor: glowColor,
                 boxShadow: `0 0 6px ${glowColor}, 0 0 12px ${glowColor}40`,
@@ -82,7 +82,7 @@ export default function GasScale() {
             />
             {/* Center dot */}
             <div
-              className="absolute top-1/2 -translate-y-1/2 w-[6px] h-[6px] rounded-full"
+              className="absolute top-1/2 h-[6px] w-[6px] -translate-y-1/2 rounded-full"
               style={{
                 backgroundColor: '#fff',
                 boxShadow: `0 0 4px ${glowColor}, 0 0 8px ${glowColor}`,
@@ -92,7 +92,7 @@ export default function GasScale() {
         </div>
 
         {/* Labels */}
-        <div className="flex w-full justify-between mt-4 font-mono text-xs text-text-muted">
+        <div className="mt-4 flex w-full justify-between font-mono text-xs text-text-muted">
           {tier.labels.map((gwei) => (
             <span key={gwei}>{gwei}</span>
           ))}
@@ -100,7 +100,7 @@ export default function GasScale() {
       </div>
 
       {/* Context cards */}
-      <div className="grid grid-cols-3 gap-3 mt-6">
+      <div className="mt-6 grid grid-cols-3 gap-3">
         {[
           { label: 'Low', range: '< 1', color: '#34d399' },
           { label: 'Medium', range: '1 - 5', color: '#fbbf24' },
@@ -108,23 +108,16 @@ export default function GasScale() {
         ].map(({ label, range, color }) => (
           <div
             key={label}
-            className="bg-surface-raised border border-border rounded-xl p-3 text-center"
+            className="rounded-xl border border-border bg-surface-raised p-3 text-center"
           >
-            <div className="flex items-center justify-center gap-2 mb-1">
-              <div
-                className="w-2 h-2 rounded-full"
-                style={{ backgroundColor: color }}
-              />
-              <span className="text-sm font-medium text-text-primary">
-                {label}
-              </span>
+            <div className="mb-1 flex items-center justify-center gap-2">
+              <div className="h-2 w-2 rounded-full" style={{ backgroundColor: color }} />
+              <span className="text-sm font-medium text-text-primary">{label}</span>
             </div>
-            <span className="text-xs text-text-muted font-mono">
-              {range} Gwei
-            </span>
+            <span className="font-mono text-xs text-text-muted">{range} Gwei</span>
           </div>
         ))}
       </div>
     </div>
-  )
+  );
 }

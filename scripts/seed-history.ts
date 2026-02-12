@@ -1,7 +1,7 @@
+import { execFileSync } from 'child_process';
+import { unlinkSync, writeFileSync } from 'fs';
 import { createPublicClient, http } from 'viem';
 import { mainnet } from 'viem/chains';
-import { execFileSync } from 'child_process';
-import { writeFileSync, unlinkSync } from 'fs';
 
 const BLOCK_COUNT = 1000;
 const BLOCK_SKIP = 5;
@@ -59,17 +59,29 @@ async function main() {
   console.log(`Inserting ${rows.length} records in ${chunks.length} batch(es)...`);
 
   for (let i = 0; i < chunks.length; i++) {
-    const sql = i === 0
-      ? `${header}\nINSERT OR REPLACE INTO gas_prices (block_number, timestamp, gas_price, block_gas_limit) VALUES\n${chunks[i].join(',\n')};`
-      : `INSERT OR REPLACE INTO gas_prices (block_number, timestamp, gas_price, block_gas_limit) VALUES\n${chunks[i].join(',\n')};`;
+    const sql =
+      i === 0
+        ? `${header}\nINSERT OR REPLACE INTO gas_prices (block_number, timestamp, gas_price, block_gas_limit) VALUES\n${chunks[i].join(',\n')};`
+        : `INSERT OR REPLACE INTO gas_prices (block_number, timestamp, gas_price, block_gas_limit) VALUES\n${chunks[i].join(',\n')};`;
 
     writeFileSync(tmpFile, sql);
 
     try {
       const remote = process.env.SEED_REMOTE === '1';
-      execFileSync('bunx', ['wrangler', 'd1', 'execute', 'eth-gas-alerts', ...(remote ? [`--remote`] : ['--local']), `--file=${tmpFile}`], {
-        stdio: 'inherit',
-      });
+      execFileSync(
+        'bunx',
+        [
+          'wrangler',
+          'd1',
+          'execute',
+          'eth-gas-alerts',
+          ...(remote ? [`--remote`] : ['--local']),
+          `--file=${tmpFile}`,
+        ],
+        {
+          stdio: 'inherit',
+        }
+      );
       console.log(`  batch ${i + 1}/${chunks.length} done (${chunks[i].length} rows)`);
     } catch (err) {
       console.error(`  batch ${i + 1} failed:`, err);

@@ -4,35 +4,40 @@ import StatsBar from './react/StatsBar';
 const pathname = Astro.url.pathname;
 ---
 
-<nav class="w-full flex justify-between items-center gap-4 flex-wrap relative z-10 animate-fade-in">
-  <div class="flex justify-start gap-4 items-center">
-    <a href="/" class="text-lg font-semibold tracking-tight text-text-primary hover:text-accent transition-colors">
-      <span class="text-accent mr-1.5">&diamond;</span>ETH Gas Alerts
+<nav class="relative z-10 flex w-full animate-fade-in flex-wrap items-center justify-between gap-4">
+  <div class="flex items-center justify-start gap-4">
+    <a
+      href="/"
+      class="text-lg font-semibold tracking-tight text-text-primary transition-colors hover:text-accent"
+    >
+      <span class="mr-1.5 text-accent">&diamond;</span>ETH Gas Alerts
     </a>
     <StatsBar client:load />
   </div>
   <div class="flex items-center gap-1">
-    {[
-      { href: '/', label: 'Live Gas' },
-      { href: '/estimates', label: 'Estimates' },
-      { href: '/transaction-builder', label: 'Custom', hideOnMobile: true },
-      { href: '/history', label: 'History' },
-    ].map(({ href, label, hideOnMobile }) => {
-      const isActive = pathname === href;
-      return (
-        <a
-          href={href}
-          class:list={[
-            'px-3 py-1.5 rounded-lg text-sm font-medium transition-all',
-            isActive
-              ? 'bg-surface-overlay text-text-primary'
-              : 'text-text-secondary hover:text-text-primary hover:bg-surface-raised',
-            hideOnMobile && 'hide-mobile',
-          ]}
-        >
-          {label}
-        </a>
-      );
-    })}
+    {
+      [
+        { href: '/', label: 'Live Gas' },
+        { href: '/estimates', label: 'Estimates' },
+        { href: '/transaction-builder', label: 'Custom', hideOnMobile: true },
+        { href: '/history', label: 'History' },
+      ].map(({ href, label, hideOnMobile }) => {
+        const isActive = pathname === href;
+        return (
+          <a
+            href={href}
+            class:list={[
+              'rounded-lg px-3 py-1.5 text-sm font-medium transition-all',
+              isActive
+                ? 'bg-surface-overlay text-text-primary'
+                : 'text-text-secondary hover:bg-surface-raised hover:text-text-primary',
+              hideOnMobile && 'hide-mobile',
+            ]}
+          >
+            {label}
+          </a>
+        );
+      })
+    }
   </div>
 </nav>

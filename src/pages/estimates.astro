@@ -5,7 +5,10 @@ import Footer from '@/components/Footer.astro';
 import Estimates from '@/components/react/Estimates';
 ---
 
-<Layout title="Ethereum Gas Estimates" description="Transaction fee estimates for popular Ethereum protocols">
+<Layout
+  title="Ethereum Gas Estimates"
+  description="Transaction fee estimates for popular Ethereum protocols"
+>
   <Nav />
   <main class="w-full">
     <Estimates client:load />

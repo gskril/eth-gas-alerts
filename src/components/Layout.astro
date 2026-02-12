@@ -24,12 +24,22 @@ const { title, description = 'Human-readable scale for Ethereum gas prices' } = 
     <meta property="twitter:creator" content="@gregskril" />
     <meta property="twitter:card" content="summary_large_image" />
   </head>
-  <body class="min-h-svh flex flex-col items-center justify-between px-5 py-6 sm:px-8 sm:py-8 gap-12 sm:gap-16 relative overflow-x-hidden">
+  <body
+    class="relative flex min-h-svh flex-col items-center justify-between gap-12 overflow-x-hidden px-5 py-6 sm:gap-16 sm:px-8 sm:py-8"
+  >
     <!-- Dot texture -->
-    <div class="fixed inset-0 pointer-events-none" style={`opacity: var(--dot-opacity); background-image: radial-gradient(circle at 1px 1px, var(--dot-color) 1px, transparent 0); background-size: 32px 32px;`}></div>
+    <div
+      class="pointer-events-none fixed inset-0"
+      style={`opacity: var(--dot-opacity); background-image: radial-gradient(circle at 1px 1px, var(--dot-color) 1px, transparent 0); background-size: 32px 32px;`}
+    >
+    </div>
 
     <!-- Ambient glow -->
-    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[500px] h-[200px] pointer-events-none" style={`opacity: var(--glow-opacity); background: radial-gradient(ellipse at center, #818cf8, transparent 70%);`}></div>
+    <div
+      class="pointer-events-none fixed left-1/2 top-0 h-[200px] w-[500px] -translate-x-1/2"
+      style={`opacity: var(--glow-opacity); background: radial-gradient(ellipse at center, #818cf8, transparent 70%);`}
+    >
+    </div>
 
     <slot />
   </body>

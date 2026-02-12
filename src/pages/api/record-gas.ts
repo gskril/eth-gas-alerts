@@ -20,10 +20,7 @@ export async function POST(context: APIContext) {
   try {
     const client = getClient(rpcUrl);
 
-    const [block, gasPriceWei] = await Promise.all([
-      client.getBlock(),
-      getGasPriceWei(rpcUrl),
-    ]);
+    const [block, gasPriceWei] = await Promise.all([client.getBlock(), getGasPriceWei(rpcUrl)]);
 
     await db
       .prepare(
@@ -39,9 +36,6 @@ export async function POST(context: APIContext) {
 
     return Response.json({ success: true });
   } catch (error) {
-    return Response.json(
-      { error: 'Failed to record gas price' },
-      { status: 500 }
-    );
+    return Response.json({ error: 'Failed to record gas price' }, { status: 500 });
   }
 }

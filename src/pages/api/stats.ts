@@ -1,6 +1,6 @@
 import type { APIContext } from 'astro';
 
-import { getGasPriceWei, getEthPriceRaw, formatGasPrice, formatEthPrice } from '@/lib/ethereum';
+import { formatEthPrice, formatGasPrice, getEthPriceRaw, getGasPriceWei } from '@/lib/ethereum';
 
 export async function GET(context: APIContext) {
   const rpcUrl = context.locals.runtime?.env?.ETH_RPC || undefined;
