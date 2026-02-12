@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { protocols } from '@/data/protocols';
 import { calculateCostUsd } from '@/lib/constants';
@@ -120,10 +120,8 @@ function EstimatesInner() {
                     <div className="pb-2 pl-2 font-mono text-xs text-text-muted">
                       {action.contractFunctions.map((f, i) => (
                         <span key={i}>
-                          {f.name}
-                          {action.contractFunctions.length > 1
-                            ? ` (${gasPriceEstimate(f.gas)})`
-                            : ''}
+                          {`${f.name} (${formatGasUnits(f.gas)} gas)`}
+
                           {i < action.contractFunctions.length - 1 ? ' + ' : ''}
                         </span>
                       ))}
@@ -137,4 +135,17 @@ function EstimatesInner() {
       </div>
     </div>
   );
+}
+
+// Handle m and k gas units, removing trailing ".0"
+function formatGasUnits(gas: number) {
+  if (gas >= 1000000) {
+    const val = (gas / 1000000).toFixed(1);
+    return (val.endsWith('.0') ? val.slice(0, -2) : val) + 'm';
+  }
+  if (gas >= 1000) {
+    const val = (gas / 1000).toFixed(1);
+    return (val.endsWith('.0') ? val.slice(0, -2) : val) + 'k';
+  }
+  return gas.toString();
 }
