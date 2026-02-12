@@ -27,7 +27,7 @@ const ALL_RANGES: TimeRange[] = ['1h', '6h', '24h', '7d', '30d', '6mo'];
 function getAvailableRanges(oldestTimestamp: number | null): TimeRange[] {
   if (!oldestTimestamp) return ALL_RANGES;
   const dataAgeHours = (Date.now() / 1000 - oldestTimestamp) / 3600;
-  return ALL_RANGES.filter((r) => RANGE_HOURS[r] <= Math.max(dataAgeHours * 2, 1));
+  return ALL_RANGES.filter((r) => RANGE_HOURS[r] <= dataAgeHours);
 }
 
 function getBestDefaultRange(available: TimeRange[]): TimeRange {
@@ -219,7 +219,17 @@ export default function GasChart() {
             No history data yet
           </div>
         ) : (
-          <div ref={chartRef} className="[&_.u-wrap]:!bg-transparent" />
+          <div className="relative">
+            {loading && (
+              <div className="absolute inset-0 z-10 flex items-center justify-center bg-surface-raised/60 rounded-lg backdrop-blur-[1px] transition-opacity">
+                <svg className="animate-spin h-5 w-5 text-accent" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+              </div>
+            )}
+            <div ref={chartRef} className="[&_.u-wrap]:!bg-transparent" />
+          </div>
         )}
       </div>
     </div>
