@@ -4,22 +4,22 @@ import { formatUnits } from 'viem';
 const VALID_HOURS = new Set([6, 24, 168, 720, 1440, 2160, 4320]);
 
 // Returns the time-bucket size in seconds for a given range.
-// Targets ~200-400 data points per range to keep payloads light.
+// Targets ~200-300 data points per range to keep payloads light.
 //  6h  → raw          (~360 pts)
 //  24h → 5 min        (~288 pts)
 //  7d  → 30 min       (~336 pts)
 //  30d → 2 hours      (~360 pts)
-//  2mo → 4 hours      (~360 pts)
-//  3mo → 6 hours      (~360 pts)
-//  6mo → 12 hours     (~360 pts)
+//  2mo → 8 hours      (~180 pts)
+//  3mo → 12 hours     (~180 pts)
+//  6mo → 1 day        (~180 pts)
 function bucketSize(hours: number): number | null {
   if (hours <= 6) return null; // no bucketing
   if (hours <= 24) return 300;
   if (hours <= 168) return 1800;
   if (hours <= 720) return 7200;
-  if (hours <= 1440) return 14400;
-  if (hours <= 2160) return 21600;
-  return 43200;
+  if (hours <= 1440) return 28800;
+  if (hours <= 2160) return 43200;
+  return 86400;
 }
 
 //  6h  → 30s   (recent data, changes quickly)
