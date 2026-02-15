@@ -1,21 +1,24 @@
 import type { APIContext } from 'astro';
 import { formatUnits } from 'viem';
 
-const VALID_HOURS = new Set([6, 24, 168, 720, 4320]);
+const VALID_HOURS = new Set([6, 24, 168, 720, 1440, 2160, 4320]);
 
 // Returns the time-bucket size in seconds for a given range.
 // Targets ~200-400 data points per range to keep payloads light.
-//  1h  → raw          (~60 pts)
 //  6h  → raw          (~360 pts)
 //  24h → 5 min        (~288 pts)
 //  7d  → 30 min       (~336 pts)
 //  30d → 2 hours      (~360 pts)
+//  2mo → 4 hours      (~360 pts)
+//  3mo → 6 hours      (~360 pts)
 //  6mo → 12 hours     (~360 pts)
 function bucketSize(hours: number): number | null {
   if (hours <= 6) return null; // no bucketing
   if (hours <= 24) return 300;
   if (hours <= 168) return 1800;
   if (hours <= 720) return 7200;
+  if (hours <= 1440) return 14400;
+  if (hours <= 2160) return 21600;
   return 43200;
 }
 
@@ -23,7 +26,7 @@ function bucketSize(hours: number): number | null {
 //  24h → 2 min
 //  7d  → 10 min
 //  30d → 30 min
-//  6mo → 1 hour
+//  2mo+ → 1 hour
 function cacheTtl(hours: number): number {
   if (hours <= 6) return 30;
   if (hours <= 24) return 120;
