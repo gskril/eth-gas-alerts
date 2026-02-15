@@ -12,6 +12,11 @@ const DB_BATCH_SIZE = 1000;
 // 260k BLOCK_COUNT gives us 180 days of history
 // Wipe db before seeding:
 // bunx wrangler d1 execute eth-gas-alerts --remote --command "DROP TABLE IF EXISTS gas_prices;"
+//
+// D1 billing note: 50k rows typically shows ~100k row writes and ~350k+ row reads.
+// - Writes: 1 per table row + 1 per index update (idx_timestamp) = 2x row count.
+// - Reads: INSERT OR IGNORE does a PK lookup per row; each lookup scans several
+//   internal rows (B-tree nodes), so reads ≈ 7–8x row count.
 
 async function main() {
   const rpcUrl = process.env.ETH_RPC || 'https://ethereum-rpc.publicnode.com';
