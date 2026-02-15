@@ -1,9 +1,31 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import 'uplot/dist/uPlot.min.css';
 
 import { useHistory } from '@/lib/hooks';
 
 import QueryProvider from './QueryProvider';
+
+type TimeRange = '1mo' | '2mo' | '3mo' | '6mo';
+
+const RANGE_HOURS: Record<TimeRange, number> = {
+  '1mo': 720,
+  '2mo': 1440,
+  '3mo': 2160,
+  '6mo': 4320,
+};
+
+const ALL_RANGES: TimeRange[] = ['1mo', '2mo', '3mo', '6mo'];
+
+function getAvailableRanges(oldestTimestamp: number | null): TimeRange[] {
+  if (!oldestTimestamp) return ALL_RANGES;
+  const dataAgeHours = (Date.now() / 1000 - oldestTimestamp) / 3600;
+  return ALL_RANGES.filter((r) => RANGE_HOURS[r] <= dataAgeHours);
+}
+
+function getBestDefaultRange(available: TimeRange[]): TimeRange {
+  if (available.includes('3mo')) return '3mo';
+  return available[available.length - 1] || '1mo';
+}
 
 function getVar(name: string) {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -38,9 +60,21 @@ function GasLimitChartInner() {
   const chartRef = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const uplotRef = useRef<any>(null);
+  const [range, setRange] = useState<TimeRange>('3mo');
+  const initializedRef = useRef(false);
 
-  const { data: historyData, isPending } = useHistory(4320);
+  const { data: historyData, isPending, isFetching } = useHistory(RANGE_HOURS[range]);
   const points = historyData?.data ?? [];
+  const availableRanges = getAvailableRanges(historyData?.oldest_timestamp ?? null);
+
+  // One-time: pick the best default range once data arrives
+  useEffect(() => {
+    if (historyData && !initializedRef.current) {
+      initializedRef.current = true;
+      const best = getBestDefaultRange(availableRanges);
+      if (best !== range) setRange(best);
+    }
+  }, [historyData, availableRanges, range]);
 
   useEffect(() => {
     if (!chartRef.current || points.length === 0) return;
@@ -189,6 +223,23 @@ function GasLimitChartInner() {
       </p>
 
       <div className="rounded-xl border border-border bg-surface-raised p-5">
+        {/* Range selector */}
+        <div className="mb-4 flex justify-end gap-1">
+          {availableRanges.map((r) => (
+            <button
+              key={r}
+              onClick={() => setRange(r)}
+              className={`rounded-lg px-3 py-1 font-mono text-xs font-medium transition-all ${
+                range === r
+                  ? 'bg-accent/15 border-accent/20 border text-accent'
+                  : 'border border-transparent text-text-muted hover:bg-surface-overlay hover:text-text-secondary'
+              }`}
+            >
+              {r}
+            </button>
+          ))}
+        </div>
+
         {isPending ? (
           <div className="flex items-center justify-center py-24 text-sm text-text-muted">
             <svg className="mr-2 h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
@@ -226,6 +277,25 @@ function GasLimitChartInner() {
           </div>
         ) : (
           <div className="relative">
+            {isFetching && !isPending && (
+              <div className="bg-surface-raised/60 absolute inset-0 z-10 flex items-center justify-center rounded-lg backdrop-blur-[1px] transition-opacity">
+                <svg className="h-5 w-5 animate-spin text-accent" viewBox="0 0 24 24" fill="none">
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  />
+                </svg>
+              </div>
+            )}
             <div ref={chartRef} className="[&_.u-wrap]:!bg-transparent" />
             <div
               ref={tooltipRef}
